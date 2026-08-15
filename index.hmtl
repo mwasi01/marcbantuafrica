@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcbantu Africa | Smart farm management</title>
+    <!-- Font Awesome for icons (optional but clean) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --green-deep: #1a3c2e;      /* deep forest green */
+            --green-mid: #2f5d3a;      /* medium green */
+            --green-soft: #e8f0e1;     /* soft background */
+            --gold: #d4a017;           /* rich golden yellow */
+            --gold-soft: #f5e7b2;      /* soft gold tint */
+            --gold-bright: #e6b422;    /* bright accent */
+            --white: #ffffff;
+            --off-white: #f9faf7;
+            --text-dark: #1e2a1e;
+            --text-muted: #3b4a3b;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+            background-color: var(--off-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* header / navigation */
+        .navbar {
+            background-color: var(--green-deep);
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--gold-bright);
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.7rem;
+            letter-spacing: -0.5px;
+        }
+        .logo-text span {
+            color: var(--gold-bright);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.2rem;
+            font-weight: 500;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover {
+            color: var(--gold-bright);
+        }
+        .btn-outline-gold {
+            border: 2px solid var(--gold-bright);
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            transition: all 0.2s;
+            color: var(--gold-bright);
+        }
+        .btn-outline-gold:hover {
+            background-color: var(--gold-bright);
+            color: var(--green-deep) !important;
+        }
+
+        /* hero section */
+        .hero {
+            background: linear-gradient(135deg, #183e2c 0%, #2a5d3f 100%);
+            color: var(--white);
+            padding: 4rem 0 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::after {
+            content: "";
+            position: absolute;
+            right: -80px;
+            bottom: -80px;
+            width: 280px;
+            height: 280px;
+            background: rgba(212, 160, 23, 0.15);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        .hero-text {
+            flex: 1 1 400px;
+        }
+        .hero-text h1 {
+            font-size: 3rem;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+        .hero-text h1 .highlight {
+            color: var(--gold-bright);
+        }
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #e3efe6;
+            max-width: 550px;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(2px);
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gold-bright);
+            color: var(--gold-soft);
+        }
+        .hero-image {
+            flex: 1 1 280px;
+            text-align: center;
+        }
+        .hero-image i {
+            font-size: 8rem;
+            color: var(--gold-bright);
+            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
+        }
+        .btn-primary {
+            background-color: var(--gold-bright);
+            color: var(--green-deep);
+            padding: 0.9rem 2.2rem;
+            border-radius: 40px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.2s;
+            border: 2px solid var(--gold-bright);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+        }
+        .btn-primary:hover {
+            background-color: transparent;
+            color: var(--gold-bright);
+            border-color: var(--gold-bright);
+        }
+
+        /* stats / quick info strip */
+        .stats-strip {
+            background-color: var(--gold);
+            padding: 1.8rem 0;
+            color: var(--green-deep);
+            font-weight: 600;
+            text-align: center;
+        }
+        .stats-strip .container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        .stat-item i {
+            font-size: 1.8rem;
+            color: var(--green-deep);
+            margin-right: 8px;
+        }
+
+        /* section headings */
+        section {
+            padding: 4rem 0;
+        }
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title:after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: var(--gold);
+            margin-top: 6px;
+            border-radius: 4px;
+        }
+        .section-sub {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* cards */
+        .card-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+        .card {
+            background: var(--white);
+            padding: 2rem 1.8rem;
+            border-radius: 24px;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.05);
+            flex: 1 1 240px;
+            max-width: 280px;
+            text-align: center;
+            transition: transform 0.3s;
+            border: 1px solid #e6e9e2;
+            border-top: 5px solid var(--gold);
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 24px 36px rgba(0, 0, 0, 0.08);
+        }
+        .card i {
+            font-size: 2.5rem;
+            color: var(--green-mid);
+            margin-bottom: 1rem;
+        }
+        .card h3 {
+            color: var(--green-deep);
+            margin-bottom: 0.6rem;
+            font-size: 1.4rem;
+        }
+
+        /* feature list with two-column */
+        .feature-split {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            flex-wrap: wrap;
+            background: var(--green-soft);
+            border-radius: 30px;
+            padding: 2.5rem 2rem;
+            margin-top: 2rem;
+            border: 1px solid #d0dcc8;
+        }
+        .feature-split-text {
+            flex: 2 1 300px;
+        }
+        .feature-split-text h3 {
+            color: var(--green-deep);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .feature-split-icon {
+            flex: 1 1 150px;
+            text-align: center;
+            font-size: 5rem;
+            color: var(--gold);
+        }
+
+        /* about / channel description */
+        .about-highlight {
+            background: var(--white);
+            padding: 2.8rem;
+            border-radius: 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+            border-left: 10px solid var(--gold);
+        }
+        .about-highlight p {
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
+        }
+
+        /* call to action */
+        .cta-banner {
+            background: var(--green-deep);
+            color: white;
+            padding: 3.5rem 2rem;
+            border-radius: 35px;
+            text-align: center;
+            margin: 3rem 0;
+            background-image: radial-gradient(circle at 30% 30%, #315f40, #1d422d);
+        }
+        .cta-banner h2 {
+            font-size: 2.3rem;
+            margin-bottom: 1rem;
+        }
+        .cta-banner .btn-primary {
+            background: var(--gold-bright);
+            border: 2px solid var(--gold-bright);
+        }
+
+        /* footer */
+        footer {
+            background: #101f18;
+            color: #cbd5cd;
+            padding: 3rem 0 1.5rem;
+            margin-top: 2rem;
+        }
+        .footer-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2.5rem;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+        .footer-col h4 {
+            color: var(--gold-bright);
+            margin-bottom: 1rem;
+        }
+        .footer-col a, .footer-col p {
+            color: #cbd5cd;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+        .footer-bottom {
+            border-top: 1px solid #2a3a2e;
+            padding-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .gold-text {
+            color: var(--gold-bright);
+            font-weight: 600;
+        }
+
+        /* responsiveness */
+        @media (max-width: 768px) {
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.9rem;
+            }
+            .hero-content {
+                flex-direction: column-reverse;
+                text-align: center;
+            }
+            .hero-image i {
+                font-size: 5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <header class="navbar">
+        <div class="container nav-wrap">
+            <a href="#" class="logo">
+                <i class="fas fa-seedling logo-icon"></i>
+                <div class="logo-text">Marcbantu<span> Africa</span></div>
+            </a>
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#about">About</a>
+                <a href="#programs">Programs</a>
+                <a href="#tools">Digital tools</a>
+                <a href="#contact" class="btn-outline-gold">Contact</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <span class="hero-badge"><i class="fas fa-wifi" style="margin-right: 6px;"></i> tech-driven farming</span>
+                <h1>Farm smarter.<br><span class="highlight">Manage better.</span> Grow wealth.</h1>
+                <p>Marcbantu Africa helps farmers across the continent become profitable managers through simple digital tools, practical programs, and clear farm management principles.</p>
+                <a href="#programs" class="btn-primary"><i class="fas fa-play-circle"></i> Explore programs</a>
+            </div>
+            <div class="hero-image">
+                <i class="fas fa-tractor"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick stats / value strip -->
+    <div class="stats-strip">
+        <div class="container">
+            <div class="stat-item"><i class="fas fa-chart-line"></i> Data-driven decisions</div>
+            <div class="stat-item"><i class="fas fa-mobile-alt"></i> Simple digital tools</div>
+            <div class="stat-item"><i class="fas fa-hand-holding-usd"></i> Profit focused</div>
+            <div class="stat-item"><i class="fas fa-globe-africa"></i> Built for Africa</div>
+        </div>
+    </div>
+
+    <!-- About / Mission Section -->
+    <section id="about">
+        <div class="container">
+            <h2 class="section-title">The Marcbantu approach</h2>
+            <p class="section-sub">Turning guesswork into smart, sustainable management</p>
+            <div class="about-highlight">
+                <p><i class="fas fa-check-circle gold-text"></i> <strong>Software & technology-driven agricultural company</strong> – focused on helping farmers become better managers.</p>
+                <p>This channel is dedicated to teaching farmers how to manage their farms as profitable, sustainable businesses using simple digital tools, practical programs, and clear farm management principles. We break down complex technology into easy-to-understand solutions that support better planning, record keeping, decision-making, and overall farm performance.</p>
+                <p><strong>Designed for</strong> small to medium-scale farmers, agripreneurs, and farm managers across Africa who want to move from guesswork to data-driven farming.</p>
+                <p style="font-weight:600; margin-top:1.2rem;"><i class="fas fa-lightbulb"></i> At Marcbantu Africa, we believe the future of farming depends on smart management supported by the right technology.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core pillars / programs -->
+    <section id="programs">
+        <div class="container">
+            <h2 class="section-title">What we teach & offer</h2>
+            <p class="section-sub">Practical programs & digital tools for real farm growth</p>
+            <div class="card-grid">
+                <div class="card">
+                    <i class="fas fa-book-open"></i>
+                    <h3>Farm management principles</h3>
+                    <p>Clear planning, record keeping, and decision-making frameworks.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-laptop-code"></i>
+                    <h3>Simple digital tools</h3>
+                    <p>Easy-to-use tech for tracking, budgeting, and farm analysis.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-video"></i>
+                    <h3>Tutorials & demos</h3>
+                    <p>Real-world demonstrations and step-by-step guides.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-chart-pie"></i>
+                    <h3>Data-driven insights</h3>
+                    <p>Turn farm records into profitable decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Feature split section: real-world examples -->
+    <div class="container">
+        <div class="feature-split">
+            <div class="feature-split-text">
+                <h3><i class="fas fa-comments-dollar" style="color: var(--gold);"></i> From guesswork to data-driven farming</h3>
+                <p>Our content uses tutorials, demonstrations, and real-world African farm examples. We show how technology can improve productivity, efficiency, and profitability in agriculture — regardless of farm size.</p>
+                <p style="margin-top:1rem;"><i class="fas fa-check" style="color: var(--gold);"></i> Small to medium-scale farmers <br>
+                <i class="fas fa-check" style="color: var(--gold);"></i> Agripreneurs & farm managers <br>
+                <i class="fas fa-check" style="color: var(--gold);"></i> Anyone ready to run a profitable, sustainable farm business.</p>
+            </div>
+            <div class="feature-split-icon">
+                <i class="fas fa-chart-bar"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Target audience / extra -->
+    <section id="tools">
+        <div class="container">
+            <h2 class="section-title">Who we serve</h2>
+            <div class="card-grid" style="margin-top:2rem;">
+                <div class="card">
+                    <i class="fas fa-user-friends"></i>
+                    <h3>Small-scale farmers</h3>
+                    <p>Learn to manage resources and increase yields.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-user-tie"></i>
+                    <h3>Agripreneurs</h3>
+                    <p>Build farm businesses that thrive with technology.</p>
+                </div>
+                <div class="card">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Farm managers</h3>
+                    <p>Optimize daily operations and long-term planning.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to action -->
+    <div class="container">
+        <div class="cta-banner">
+            <h2><i class="fas fa-seedling gold-text"></i> Ready to manage your farm like a business?</h2>
+            <p style="margin-bottom: 2rem; color:#e0ede2;">Subscribe to our channel and start using digital tools that make farming profitable.</p>
+            <a href="#" class="btn-primary"><i class="fab fa-youtube"></i> Join Marcbantu Africa</a>
+            <p style="margin-top:1.2rem; font-size:0.9rem; opacity:0.8;">Simple. Practical. Made for African farmers.</p>
+        </div>
+    </div>
+
+    <!-- Footer / contact -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4><i class="fas fa-seedling"></i> Marcbantu Africa</h4>
+                    <p>Software & technology-driven agricultural company.<br>Empowering better farm managers.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick links</h4>
+                    <a href="#">Programs</a>
+                    <a href="#">Tutorials</a>
+                    <a href="#">Digital tools</a>
+                    <a href="#">About us</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <a href="#"><i class="fab fa-youtube"></i> YouTube channel</a>
+                    <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+                    <a href="#"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> info@marcbantu.africa</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya (Pan-African)</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                © 2025 Marcbantu Africa. All rights reserved. <span class="gold-text">Smart farming starts with smart management.</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
