@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market & Sales | Marcbantu Africa</title>
+    <meta name="theme-color" content="#1a3c2e">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="stylesheet" href="/assets/css/print.css" media="print">
+</head>
+
+<body>
+
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand"><i class="fas fa-seedling"></i><span>Marcbantu <span>Africa</span></span></div>
+            <nav class="sidebar-nav">
+                <div class="section-label">Main</div>
+                <a href="/dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a>
+                <a href="/records.html"><i class="fas fa-book"></i> Farm Records</a>
+                <a href="/planning.html"><i class="fas fa-calendar-alt"></i> Planning</a>
+                <a href="/finance.html"><i class="fas fa-chart-pie"></i> Finance</a>
+                <a href="/decisions.html"><i class="fas fa-lightbulb"></i> Decisions</a>
+                <div class="section-label">Operations</div>
+                <a href="/operations.html"><i class="fas fa-tasks"></i> Operations</a>
+                <a href="/market.html" class="active"><i class="fas fa-store"></i> Market & Sales</a>
+                <a href="/weather.html"><i class="fas fa-cloud-sun"></i> Weather</a>
+                <a href="/pest.html"><i class="fas fa-bug"></i> Pest & Disease</a>
+                <div class="section-label">Growth</div>
+                <a href="/learning.html"><i class="fas fa-graduation-cap"></i> Learning</a>
+                <a href="/profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
+                <div class="section-label">Account</div>
+                <a href="#" data-action="logout"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="display:flex;align-items:center;gap:1rem">
+                    <button class="menu-toggle-app"><i class="fas fa-bars"></i></button>
+                    <h1>Market & Sales</h1>
+                </div>
+                <div style="display:flex;gap:.6rem;align-items:center">
+                    <select id="farm-selector"
+                        style="padding:8px 14px;border-radius:30px;border:1.5px solid #e2e8dd;background:#fff"></select>
+                    <button class="btn-primary no-print" data-action="new-sale"><i class="fas fa-plus"></i> Record
+                        Sale</button>
+                </div>
+            </div>
+
+            <div class="kpi-grid" id="sales-summary"></div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h3><i class="fas fa-tag"></i> Today's Market Prices</h3>
+                </div>
+                <div id="prices-grid"
+                    style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h3><i class="fas fa-receipt"></i> Recent Sales</h3>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Product</th>
+                                <th>Buyer</th>
+                                <th style="text-align:right">Qty</th>
+                                <th style="text-align:right">Total</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="sales-table-body">
+                            <tr>
+                                <td colspan="6" style="text-align:center;padding:30px;color:#8a9c8c">Loading...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/market.js"></script>
+    <script src="/assets/js/register-sw.js"></script>
+</body>
+
+</html>

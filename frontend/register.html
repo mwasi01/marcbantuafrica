@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | Marcbantu Africa</title>
+    <meta name="theme-color" content="#1a3c2e">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #183e2c 0%, #2a5d3f 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px
+        }
+
+        .register-box {
+            background: #fff;
+            border-radius: 24px;
+            padding: 2.5rem 2rem;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, .2)
+        }
+
+        .register-logo {
+            text-align: center;
+            margin-bottom: 1.5rem
+        }
+
+        .register-logo i {
+            font-size: 3rem;
+            color: #d4a017
+        }
+
+        .register-logo h1 {
+            color: #1a3c2e;
+            font-size: 1.5rem;
+            margin-top: .5rem;
+            font-weight: 800
+        }
+
+        .register-logo h1 span {
+            color: #d4a017
+        }
+
+        .register-logo p {
+            color: #4a5a4a;
+            font-size: .9rem;
+            margin-top: .4rem
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .form-group label {
+            font-size: .85rem;
+            font-weight: 600;
+            color: #1a3c2e
+        }
+
+        .form-group label .optional {
+            color: #8a9c8c;
+            font-weight: 400;
+            font-size: .78rem
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border-radius: 10px;
+            border: 1.5px solid #e2e8dd;
+            font-family: inherit;
+            font-size: .95rem
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #e6b422
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            border-radius: 40px;
+            background: #e6b422;
+            color: #1a3c2e;
+            font-weight: 800;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: inherit;
+            margin-top: .5rem;
+            transition: all .2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: #d4a017
+        }
+
+        .btn-submit:disabled {
+            opacity: .6;
+            cursor: not-allowed
+        }
+
+        .terms {
+            font-size: .82rem;
+            color: #4a5a4a;
+            text-align: center;
+            margin-top: 1rem
+        }
+
+        .terms a {
+            color: #1a3c2e;
+            font-weight: 600;
+            text-decoration: none
+        }
+
+        .login-links {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: .88rem;
+            color: #4a5a4a
+        }
+
+        .login-links a {
+            color: #1a3c2e;
+            font-weight: 600;
+            text-decoration: none
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 2rem
+        }
+
+        .back-home a {
+            color: #c8d6ca;
+            text-decoration: none;
+            font-size: .85rem
+        }
+
+        @media(max-width:480px) {
+            .form-row {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="register-box">
+        <div class="register-logo">
+            <i class="fas fa-seedling"></i>
+            <h1>Marcbantu<span> Africa</span></h1>
+            <p>Start managing your farm like a business</p>
+        </div>
+
+        <form id="registerForm" novalidate>
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" placeholder="e.g. James Mwangi" required
+                    autocomplete="name">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="0712 345 678" required autocomplete="tel">
+            </div>
+            <div class="form-group">
+                <label for="email">Email <span class="optional">(optional)</span></label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="At least 6 characters" required
+                    autocomplete="new-password" minlength="6">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="county">County <span class="optional">(optional)</span></label>
+                    <input type="text" id="county" name="county" placeholder="e.g. Kiambu">
+                </div>
+                <div class="form-group">
+                    <label for="location">Location <span class="optional">(optional)</span></label>
+                    <input type="text" id="location" name="location" placeholder="e.g. Limuru">
+                </div>
+            </div>
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+            <p class="terms">By signing up you agree to our <a href="/terms.html">Terms</a> and <a
+                    href="/privacy.html">Privacy Policy</a>.</p>
+        </form>
+
+        <div class="login-links">
+            <p>Already have an account? <a href="/login.html">Log in</a></p>
+        </div>
+
+        <div class="back-home">
+            <a href="/"><i class="fas fa-arrow-left"></i> Back to home</a>
+        </div>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/register-sw.js"></script>
+</body>
+
+</html>

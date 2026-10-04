@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decision Tools | Marcbantu Africa</title>
+    <meta name="theme-color" content="#1a3c2e">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="stylesheet" href="/assets/css/print.css" media="print">
+</head>
+
+<body>
+
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand"><i class="fas fa-seedling"></i><span>Marcbantu <span>Africa</span></span></div>
+            <nav class="sidebar-nav">
+                <div class="section-label">Main</div>
+                <a href="/dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a>
+                <a href="/records.html"><i class="fas fa-book"></i> Farm Records</a>
+                <a href="/planning.html"><i class="fas fa-calendar-alt"></i> Planning</a>
+                <a href="/finance.html"><i class="fas fa-chart-pie"></i> Finance</a>
+                <a href="/decisions.html" class="active"><i class="fas fa-lightbulb"></i> Decisions</a>
+                <div class="section-label">Operations</div>
+                <a href="/operations.html"><i class="fas fa-tasks"></i> Operations</a>
+                <a href="/market.html"><i class="fas fa-store"></i> Market & Sales</a>
+                <a href="/weather.html"><i class="fas fa-cloud-sun"></i> Weather</a>
+                <a href="/pest.html"><i class="fas fa-bug"></i> Pest & Disease</a>
+                <div class="section-label">Growth</div>
+                <a href="/learning.html"><i class="fas fa-graduation-cap"></i> Learning</a>
+                <a href="/profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
+                <div class="section-label">Account</div>
+                <a href="#" data-action="logout"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="display:flex;align-items:center;gap:1rem">
+                    <button class="menu-toggle-app"><i class="fas fa-bars"></i></button>
+                    <h1>Decision Tools</h1>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel-head">
+                        <h3><i class="fas fa-balance-scale"></i> Break-Even Calculator</h3>
+                    </div>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Total Fixed Costs (KES)</span><input
+                            type="number" id="be-fixed" value="20000"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Variable Cost / Unit (KES)</span><input
+                            type="number" id="be-var" value="15"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Selling Price / Unit (KES)</span><input
+                            type="number" id="be-price" value="45"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Unit</span><input type="text"
+                            id="be-unit" value="kg"></label>
+                    <button class="btn-primary" data-calc="breakeven"
+                        style="width:100%;justify-content:center">Calculate</button>
+                    <div id="be-result" style="margin-top:16px;display:none"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <h3><i class="fas fa-percentage"></i> Gross Margin</h3>
+                    </div>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Total Revenue (KES)</span><input
+                            type="number" id="gm-rev" value="202500"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Variable Costs (KES)</span><input
+                            type="number" id="gm-cost" value="36400"></label>
+                    <button class="btn-primary" data-calc="gross-margin"
+                        style="width:100%;justify-content:center">Calculate</button>
+                    <div id="gm-result" style="margin-top:16px;display:none"></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel-head">
+                        <h3><i class="fas fa-chart-line"></i> Marginal Analysis</h3>
+                    </div>
+                    <p style="color:#4a5a4a;font-size:.88rem;margin-bottom:12px">Is the next acre/cow/batch worth it?
+                    </p>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Additional Revenue (KES)</span><input
+                            type="number" id="ma-rev" value="45000"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Additional Cost (KES)</span><input
+                            type="number" id="ma-cost" value="28000"></label>
+                    <button class="btn-primary" data-calc="marginal"
+                        style="width:100%;justify-content:center">Analyze</button>
+                    <div id="ma-result" style="margin-top:16px;display:none"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <h3><i class="fas fa-hand-holding-usd"></i> Loan Affordability</h3>
+                    </div>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Loan Amount (KES)</span><input
+                            type="number" id="la-amt" value="100000"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Interest Rate (% per year)</span><input
+                            type="number" id="la-rate" value="14"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Term (months)</span><input
+                            type="number" id="la-term" value="12"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Monthly Farm Profit (KES)</span><input
+                            type="number" id="la-profit" value="35000"></label>
+                    <button class="btn-primary" data-calc="loan"
+                        style="width:100%;justify-content:center">Check</button>
+                    <div id="la-result" style="margin-top:16px;display:none"></div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel-head">
+                        <h3><i class="fas fa-clock"></i> Investment Payback</h3>
+                    </div>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Investment Cost (KES)</span><input
+                            type="number" id="pb-cost" value="150000"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Additional Annual Income
+                            (KES)</span><input type="number" id="pb-income" value="60000"></label>
+                    <button class="btn-primary" data-calc="payback"
+                        style="width:100%;justify-content:center">Calculate</button>
+                    <div id="pb-result" style="margin-top:16px;display:none"></div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <h3><i class="fas fa-flask"></i> What-If Simulator</h3>
+                    </div>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Current Annual Profit
+                            (KES)</span><input type="number" id="wi-profit" value="180000"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Current Revenue (KES)</span><input
+                            type="number" id="wi-revenue" value="300000"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Current Costs (KES)</span><input
+                            type="number" id="wi-costs" value="120000"></label>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+                        <label style="display:flex;flex-direction:column;gap:6px"><span
+                                style="font-size:13px;font-weight:600;color:#1a3c2e">Revenue Δ %</span><input
+                                type="number" id="wi-rev" value="-15"></label>
+                        <label style="display:flex;flex-direction:column;gap:6px"><span
+                                style="font-size:13px;font-weight:600;color:#1a3c2e">Costs Δ %</span><input
+                                type="number" id="wi-cost" value="20"></label>
+                    </div>
+                    <button class="btn-primary" data-calc="what-if"
+                        style="width:100%;justify-content:center">Simulate</button>
+                    <div id="wi-result" style="margin-top:16px;display:none"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Risk Assessment</h3>
+                </div>
+                <p style="color:#4a5a4a;font-size:.88rem;margin-bottom:12px">Score each risk from 1 (low) to 5
+                    (critical).</p>
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px">
+                    <label style="display:flex;flex-direction:column;gap:6px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Drought</span><input type="number"
+                            id="r-drought" value="3" min="1" max="5"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Pest/Disease</span><input type="number"
+                            id="r-pest" value="4" min="1" max="5"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Price Volatility</span><input
+                            type="number" id="r-price" value="3" min="1" max="5"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Market Access</span><input
+                            type="number" id="r-market" value="2" min="1" max="5"></label>
+                    <label style="display:flex;flex-direction:column;gap:6px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Finance</span><input type="number"
+                            id="r-finance" value="3" min="1" max="5"></label>
+                </div>
+                <button class="btn-primary" data-calc="risk"
+                    style="width:100%;justify-content:center;margin-top:14px">Assess Risk</button>
+                <div id="r-result" style="margin-top:16px;display:none"></div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h3><i class="fas fa-layer-group"></i> Enterprise Comparison</h3>
+                </div>
+                <div id="compare-result"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/decisions.js"></script>
+    <script src="/assets/js/register-sw.js"></script>
+</body>
+
+</html>

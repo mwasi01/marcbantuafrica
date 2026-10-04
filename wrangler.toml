@@ -1,0 +1,242 @@
+# ============================================================
+# Marcbantu Africa — Cloudflare Workers Configuration
+# ============================================================
+# Documentation: https://developers.cloudflare.com/workers/wrangler/configuration/
+# ============================================================
+
+name = "marcbantu-api"
+main = "backend/src/index.py"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["python_workers"]
+
+# Your Cloudflare account ID
+account_id = "b96935e46b5b7754f9c381d7ab70a5e2"
+
+# ============================================================
+# D1 DATABASE — Primary storage
+# ============================================================
+[[d1_databases]]
+binding = "DB"
+database_name = "marcbantu-db"
+database_id = "c5cac3d9-95d2-4d6a-a33a-26d411a9c403"
+
+# ============================================================
+# R2 BUCKET — File storage (photos, PDFs, uploads)
+# ============================================================
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "marcbantu-files"
+
+# ============================================================
+# KV NAMESPACES — Cache & sessions
+# ============================================================
+
+# General-purpose cache: weather, price trends, rate limits, OTPs
+[[kv_namespaces]]
+binding = "CACHE"
+id = "2648337e53c041f58ec2555c2421ca4f"
+
+# Session tracking: active logins, token blacklist
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "73a796d0d3b949518e6fc371e65eee1b"
+
+# ============================================================
+# QUEUES — Background jobs
+# ============================================================
+
+# Producer — where we send messages from Workers
+[[queues.producers]]
+binding = "JOBS"
+queue = "marcbantu-jobs"
+
+# Consumer — how Workers process messages
+[[queues.consumers]]
+queue = "marcbantu-jobs"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 3
+dead_letter_queue = "marcbantu-jobs-dlq"
+
+# ============================================================
+# WORKERS AI — LLM and vision models
+# ============================================================
+[ai]
+binding = "AI"
+
+# ============================================================
+# ENVIRONMENT VARIABLES (non-secret)
+# ============================================================
+[vars]
+ENVIRONMENT = "production"
+APP_NAME = "Marcbantu Africa"
+API_VERSION = "1.0.0"
+FRONTEND_URL = "https://marcbantuafrica.com"
+DEFAULT_LANGUAGE = "en"
+DEFAULT_COUNTRY = "Kenya"
+JWT_EXPIRY_HOURS = "168"
+RATE_LIMIT_PER_MINUTE = "60"
+RATE_LIMIT_PER_DAY = "5000"
+FEATURE_SMS = "true"
+FEATURE_USSD = "true"
+FEATURE_WHATSAPP = "true"
+FEATURE_AI = "true"
+
+OPEN_METEO_URL = "https://api.open-meteo.com/v1"
+AMIS_API_URL = "https://amis.co.ke/api"
+EMAIL_FROM = "noreply@marcbantuafrica.com"
+SUPPORT_EMAIL = "support@marcbantuafrica.com"
+
+# ============================================================
+# SECRETS — Set via `wrangler secret put <NAME>`
+# ============================================================
+# Required secrets:
+#   JWT_SECRET                — 64+ random chars
+#   AT_API_KEY                — Africa's Talking API key
+#   AT_USERNAME               — Africa's Talking username
+#   AT_SENDER_ID              — SMS sender ID (e.g. MARCBANTU)
+#
+# Optional secrets:
+#   AT_USSD_CODE              — USSD shortcode (e.g. *384*12345#)
+#   WHATSAPP_TOKEN            — Meta WhatsApp permanent token
+#   WHATSAPP_PHONE_ID         — Meta phone number ID
+#   WHATSAPP_VERIFY_TOKEN     — Webhook verification token
+#   MPESA_CONSUMER_KEY        — Safaricom M-Pesa consumer key
+#   MPESA_CONSUMER_SECRET     — Safaricom M-Pesa consumer secret
+#   MPESA_SHORTCODE           — Paybill / Till number
+#   MPESA_PASSKEY             — Lipa na M-Pesa passkey
+#   MPESA_CALLBACK_URL        — https://api.marcbantuafrica.com/api/webhooks/mpesa
+#   MPESA_ENVIRONMENT         — "production" or "sandbox"
+#   AMIS_API_KEY              — AMIS Kenya market data key
+#   KAMIS_API_KEY             — KAMIS market data key
+#   RESEND_API_KEY            — Resend transactional email
+#   FCM_SERVER_KEY            — Firebase push notifications
+#
+# To set: wrangler secret put JWT_SECRET
+# To list: wrangler secret list
+# To delete: wrangler secret delete JWT_SECRET
+# ============================================================
+
+# ============================================================
+# CRON TRIGGERS — Scheduled jobs (times are UTC)
+# ============================================================
+[triggers]
+crons = [
+    "0 6 * * *",
+    "0 7 * * *",
+    "0 8 * * 1",
+    "0 0 1 * *",
+]
+
+# ============================================================
+# OBSERVABILITY — Logs, metrics, tracing
+# ============================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+# ============================================================
+# PLACEMENT — Run Workers closer to D1 for lower latency
+# ============================================================
+[placement]
+mode = "smart"
+
+# ============================================================
+# STAGING ENVIRONMENT
+# ============================================================
+[env.staging]
+name = "marcbantu-api-staging"
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+APP_NAME = "Marcbantu Africa (Staging)"
+API_VERSION = "1.0.0-staging"
+FRONTEND_URL = "https://staging.marcbantuafrica.com"
+DEFAULT_LANGUAGE = "en"
+DEFAULT_COUNTRY = "Kenya"
+FEATURE_SMS = "false"
+FEATURE_USSD = "false"
+FEATURE_WHATSAPP = "false"
+FEATURE_AI = "true"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "marcbantu-db-staging"
+database_id = "REPLACE_WITH_STAGING_D1_ID"
+
+[[env.staging.r2_buckets]]
+binding = "FILES"
+bucket_name = "marcbantu-files-staging"
+
+[[env.staging.kv_namespaces]]
+binding = "CACHE"
+id = "REPLACE_WITH_STAGING_CACHE_ID"
+
+[[env.staging.kv_namespaces]]
+binding = "SESSIONS"
+id = "REPLACE_WITH_STAGING_SESSIONS_ID"
+
+[[env.staging.queues.producers]]
+binding = "JOBS"
+queue = "marcbantu-jobs-staging"
+
+[[env.staging.queues.consumers]]
+queue = "marcbantu-jobs-staging"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 3
+dead_letter_queue = "marcbantu-jobs-staging-dlq"
+
+[env.staging.triggers]
+crons = [
+    "0 6 * * *",
+    "0 7 * * *",
+]
+
+# ============================================================
+# DEVELOPMENT ENVIRONMENT (local only)
+# ============================================================
+[env.development]
+name = "marcbantu-api-dev"
+
+[env.development.vars]
+ENVIRONMENT = "development"
+APP_NAME = "Marcbantu Africa (Dev)"
+API_VERSION = "1.0.0-dev"
+FRONTEND_URL = "http://localhost:8788"
+DEFAULT_LANGUAGE = "en"
+DEFAULT_COUNTRY = "Kenya"
+FEATURE_SMS = "false"
+FEATURE_USSD = "false"
+FEATURE_WHATSAPP = "false"
+FEATURE_AI = "false"
+
+[[env.development.d1_databases]]
+binding = "DB"
+database_name = "marcbantu-db-dev"
+database_id = "local-dev"
+
+[[env.development.r2_buckets]]
+binding = "FILES"
+bucket_name = "marcbantu-files-dev"
+
+[[env.development.kv_namespaces]]
+binding = "CACHE"
+id = "local-dev-cache"
+
+[[env.development.kv_namespaces]]
+binding = "SESSIONS"
+id = "local-dev-sessions"
+
+[[env.development.queues.producers]]
+binding = "JOBS"
+queue = "marcbantu-jobs-dev"
+
+[[env.development.queues.consumers]]
+queue = "marcbantu-jobs-dev"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 3

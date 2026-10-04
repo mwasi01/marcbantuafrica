@@ -1,0 +1,18 @@
+{
+  "editor.formatOnSave": true,
+  "editor.tabSize": 4,
+  "editor.rulers": [100],
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true,
+    "**/.wrangler": true,
+    "**/node_modules": true
+  },
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": ["backend/src/tests"],
+  "python.defaultInterpreterPath": "python3",
+  "files.associations": {
+    "*.sql": "sql",
+    "wrangler.toml": "toml"
+  }
+}

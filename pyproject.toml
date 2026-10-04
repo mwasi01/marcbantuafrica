@@ -1,0 +1,7 @@
+[project]
+name = "marcbantu-backend"
+version = "1.0.0"
+license = { text = "Proprietary" }
+authors = [
+    { name = "Marcbantu Africa", email = "legal@marcbantu.africa" }
+]

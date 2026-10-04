@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marcbantu Africa | Smart Farm Management for African Farmers</title>
+    <meta name="description"
+        content="Marcbantu Africa gives African farmers the tools to plan, record, track, and grow profitable farm businesses.">
+    <meta name="theme-color" content="#1a3c2e">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="stylesheet" href="/assets/css/print.css" media="print">
+    <style>
+        .hero {
+            background: linear-gradient(135deg, #183e2c 0%, #2a5d3f 60%, #1f4a34 100%);
+            color: #fff;
+            padding: 5rem 0 6rem;
+            position: relative;
+            overflow: hidden
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            left: -120px;
+            top: -120px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(230, 180, 34, 0.12), transparent 70%);
+            border-radius: 50%
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            right: -100px;
+            bottom: -100px;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(230, 180, 34, 0.10), transparent 70%);
+            border-radius: 50%
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 3rem;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1
+        }
+
+        .hero-text {
+            flex: 1 1 480px
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: .45rem 1.1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: .85rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(230, 180, 34, 0.5);
+            color: #f5e7b2
+        }
+
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: #e6b422;
+            border-radius: 50%;
+            animation: pulse 2s infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: .5;
+                transform: scale(1.3)
+            }
+        }
+
+        .hero-text h1 {
+            font-size: 3.2rem;
+            line-height: 1.15;
+            margin-bottom: 1.2rem;
+            letter-spacing: -1.2px;
+            font-weight: 800
+        }
+
+        .hero-text h1 .highlight {
+            color: #e6b422
+        }
+
+        .hero-text p {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            color: #d8e6da;
+            max-width: 560px
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap
+        }
+
+        .hero-image {
+            flex: 1 1 300px;
+            text-align: center
+        }
+
+        .hero-image i {
+            font-size: 9rem;
+            color: #e6b422;
+            filter: drop-shadow(0 12px 24px rgba(0, 0, 0, .3));
+            animation: float 4s ease-in-out infinite
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-12px)
+            }
+        }
+
+        .stats-strip {
+            background: #d4a017;
+            padding: 1.6rem 0;
+            color: #1a3c2e;
+            font-weight: 700;
+            text-align: center
+        }
+
+        .stats-strip .container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1.2rem
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: .95rem
+        }
+
+        .stat-item i {
+            font-size: 1.5rem
+        }
+
+        .section-head {
+            margin-bottom: 3rem
+        }
+
+        .section-head.center {
+            text-align: center
+        }
+
+        .section-label {
+            display: inline-block;
+            background: #e8f0e1;
+            color: #1a3c2e;
+            padding: .35rem 1rem;
+            border-radius: 30px;
+            font-size: .8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1rem
+        }
+
+        .section-title {
+            font-size: 2.3rem;
+            font-weight: 800;
+            margin-bottom: .8rem;
+            color: #1a3c2e;
+            letter-spacing: -.6px;
+            line-height: 1.2
+        }
+
+        .section-title:after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 4px;
+            background: #d4a017;
+            margin-top: 10px;
+            border-radius: 4px
+        }
+
+        .section-head.center .section-title:after {
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        .section-sub {
+            color: #4a5a4a;
+            font-size: 1.08rem;
+            max-width: 720px
+        }
+
+        .section-head.center .section-sub {
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem
+        }
+
+        .card {
+            background: #fff;
+            padding: 2rem 1.6rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .04);
+            transition: all .3s;
+            border: 1px solid #e2e8dd;
+            border-top: 4px solid #d4a017
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, .06);
+            border-top-color: #2f5d3a
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            background: #e8f0e1;
+            color: #1a3c2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem
+        }
+
+        .card h3 {
+            color: #1a3c2e;
+            margin-bottom: .6rem;
+            font-size: 1.2rem;
+            font-weight: 700
+        }
+
+        .card p {
+            font-size: .95rem;
+            color: #4a5a4a
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+            align-items: stretch
+        }
+
+        .price-card {
+            background: #fff;
+            border-radius: 24px;
+            padding: 2.2rem 1.8rem;
+            border: 2px solid #e2e8dd;
+            text-align: center;
+            transition: all .3s;
+            display: flex;
+            flex-direction: column;
+            position: relative
+        }
+
+        .price-card.featured {
+            border-color: #d4a017;
+            box-shadow: 0 20px 48px rgba(212, 160, 23, .18);
+            transform: scale(1.03)
+        }
+
+        .price-card.featured::before {
+            content: "MOST POPULAR";
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #d4a017;
+            color: #1a3c2e;
+            padding: .35rem 1.1rem;
+            border-radius: 30px;
+            font-size: .75rem;
+            font-weight: 800;
+            letter-spacing: 1px
+        }
+
+        .price-card h3 {
+            color: #1a3c2e;
+            font-size: 1.35rem;
+            margin-bottom: .5rem;
+            font-weight: 700
+        }
+
+        .price-card .price {
+            font-size: 2.4rem;
+            font-weight: 800;
+            color: #d4a017;
+            margin: .8rem 0;
+            line-height: 1
+        }
+
+        .price-card .price span {
+            font-size: .95rem;
+            color: #4a5a4a;
+            font-weight: 500
+        }
+
+        .price-card ul {
+            list-style: none;
+            text-align: left;
+            margin: 1.5rem 0;
+            flex-grow: 1
+        }
+
+        .price-card ul li {
+            padding: .55rem 0;
+            font-size: .93rem;
+            color: #4a5a4a;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px
+        }
+
+        .price-card ul li i {
+            color: #2f5d3a;
+            margin-top: 5px;
+            font-size: .85rem;
+            flex-shrink: 0
+        }
+
+        .cta-banner {
+            background: #1a3c2e;
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 32px;
+            text-align: center;
+            margin: 3rem 0;
+            background-image: radial-gradient(circle at 30% 30%, #315f40, #1d422d)
+        }
+
+        .cta-banner h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+            letter-spacing: -.5px
+        }
+
+        .cta-banner p {
+            margin-bottom: 2rem;
+            color: #d8e6da;
+            font-size: 1.05rem
+        }
+
+        footer {
+            background: #0f1e17;
+            color: #b8c8ba;
+            padding: 4rem 0 1.5rem
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2.5rem
+        }
+
+        .footer-col h4 {
+            color: #e6b422;
+            margin-bottom: 1rem;
+            font-size: .95rem;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            font-weight: 700
+        }
+
+        .footer-col p,
+        .footer-col a {
+            color: #b8c8ba;
+            text-decoration: none;
+            display: block;
+            margin-bottom: .5rem;
+            font-size: .92rem
+        }
+
+        .footer-col a:hover {
+            color: #e6b422
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 1rem
+        }
+
+        .footer-brand i {
+            color: #e6b422;
+            font-size: 1.8rem
+        }
+
+        .footer-brand span {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #fff
+        }
+
+        .footer-brand span span {
+            color: #e6b422
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #1f3028;
+            padding-top: 1.5rem;
+            text-align: center;
+            font-size: .88rem;
+            color: #8a9c8c
+        }
+
+        @media(max-width:768px) {
+            .hero-text h1 {
+                font-size: 2.2rem
+            }
+
+            .hero {
+                padding: 3rem 0 4rem
+            }
+
+            .hero-content {
+                flex-direction: column-reverse;
+                text-align: center
+            }
+
+            .hero-buttons {
+                justify-content: center
+            }
+
+            .hero-image i {
+                font-size: 5.5rem
+            }
+
+            .section-title {
+                font-size: 1.7rem
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr
+            }
+
+            .price-card.featured {
+                transform: scale(1)
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header
+        style="background:#1a3c2e;padding:1rem 0;position:sticky;top:0;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,.08)">
+        <div class="container"
+            style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem">
+            <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff">
+                <i class="fas fa-seedling" style="font-size:1.9rem;color:#e6b422"></i>
+                <span style="font-weight:800;font-size:1.55rem;letter-spacing:-.6px">Marcbantu<span
+                        style="color:#e6b422"> Africa</span></span>
+            </a>
+            <nav style="display:flex;gap:1.6rem;align-items:center;flex-wrap:wrap">
+                <a href="#tools" style="color:#fff;text-decoration:none;font-size:.95rem">Tools</a>
+                <a href="#how" style="color:#fff;text-decoration:none;font-size:.95rem">How it works</a>
+                <a href="#pricing" style="color:#fff;text-decoration:none;font-size:.95rem">Pricing</a>
+                <a href="#stories" style="color:#fff;text-decoration:none;font-size:.95rem">Stories</a>
+                <a href="/login.html" style="color:#fff;text-decoration:none;font-size:.95rem">Log in</a>
+                <a href="/register.html"
+                    style="background:#e6b422;color:#1a3c2e;padding:.5rem 1.4rem;border-radius:30px;font-weight:700;text-decoration:none;border:2px solid #e6b422;font-size:.95rem">Get
+                    Started</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <span class="hero-badge"><span class="dot"></span> Trusted by farmers across Africa</span>
+                <h1>Run your farm like a <span class="highlight">real business.</span></h1>
+                <p>Track every shilling. Plan every season. Know your profit. Marcbantu Africa gives you the tools,
+                    records, and insights to grow a farm that pays.</p>
+                <div class="hero-buttons">
+                    <a href="/register.html" class="btn-primary"><i class="fas fa-rocket"></i> Start free today</a>
+                    <a href="#tools" class="btn-outline" style="border-color:rgba(255,255,255,0.5);color:#fff"><i
+                            class="fas fa-play-circle"></i> See the tools</a>
+                </div>
+                <div style="margin-top:2rem;display:flex;gap:1.5rem;flex-wrap:wrap;font-size:.9rem;color:#c8d6ca">
+                    <span><i class="fas fa-check-circle" style="color:#e6b422"></i> Works offline</span>
+                    <span><i class="fas fa-check-circle" style="color:#e6b422"></i> Any phone</span>
+                    <span><i class="fas fa-check-circle" style="color:#e6b422"></i> Free to start</span>
+                </div>
+            </div>
+            <div class="hero-image">
+                <i class="fas fa-tractor"></i>
+            </div>
+        </div>
+    </section>
+
+    <div class="stats-strip">
+        <div class="container">
+            <div class="stat-item"><i class="fas fa-chart-line"></i> Data-driven decisions</div>
+            <div class="stat-item"><i class="fas fa-mobile-alt"></i> Simple digital tools</div>
+            <div class="stat-item"><i class="fas fa-hand-holding-usd"></i> Profit focused</div>
+            <div class="stat-item"><i class="fas fa-globe-africa"></i> Built for Africa</div>
+        </div>
+    </div>
+
+    <section id="tools" style="padding:4.5rem 0">
+        <div class="container">
+            <div class="section-head center">
+                <span class="section-label">Everything you need</span>
+                <h2 class="section-title">One platform. Every farm tool.</h2>
+                <p class="section-sub">From daily records to long-term decisions — Marcbantu gives you everything a
+                    serious farm business needs.</p>
+            </div>
+            <div class="card-grid">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-book"></i></div>
+                    <h3>Farm Records</h3>
+                    <p>Track crops, livestock, inputs, harvests, and sales. Works offline.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-calendar-alt"></i></div>
+                    <h3>Planning & Budgets</h3>
+                    <p>Season planner, enterprise budgets, cash flow forecasts.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-chart-pie"></i></div>
+                    <h3>Finance</h3>
+                    <p>Profit & loss, expense breakdown, enterprise performance.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
+                    <h3>Decisions</h3>
+                    <p>Break-even, loan affordability, risk assessment, what-if.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-tasks"></i></div>
+                    <h3>Operations</h3>
+                    <p>Tasks, workers, attendance, equipment maintenance.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-store"></i></div>
+                    <h3>Market & Sales</h3>
+                    <p>Daily prices, buyer directory, contracts, price alerts.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-cloud-sun"></i></div>
+                    <h3>Weather</h3>
+                    <p>7-day forecasts, rainfall, spray/harvest advice.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-bug"></i></div>
+                    <h3>Pest & Disease</h3>
+                    <p>AI diagnosis, treatment tracking, outbreak alerts.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <h3>Learning</h3>
+                    <p>Courses, videos, AI chatbot, farmer forum.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how" style="padding:4.5rem 0;background:#e8f0e1">
+        <div class="container">
+            <div class="section-head center">
+                <span class="section-label">Get started in minutes</span>
+                <h2 class="section-title">How Marcbantu works</h2>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem">
+                <div
+                    style="background:#fff;padding:2rem;border-radius:20px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.04)">
+                    <div
+                        style="width:50px;height:50px;border-radius:50%;background:#1a3c2e;color:#e6b422;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;margin:0 auto 1.2rem;border:3px solid #d4a017">
+                        1</div>
+                    <h3 style="color:#1a3c2e;font-size:1.1rem;margin-bottom:.6rem">Create your account</h3>
+                    <p style="font-size:.92rem;color:#4a5a4a">Sign up with your phone. Free, instant.</p>
+                </div>
+                <div
+                    style="background:#fff;padding:2rem;border-radius:20px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.04)">
+                    <div
+                        style="width:50px;height:50px;border-radius:50%;background:#1a3c2e;color:#e6b422;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;margin:0 auto 1.2rem;border:3px solid #d4a017">
+                        2</div>
+                    <h3 style="color:#1a3c2e;font-size:1.1rem;margin-bottom:.6rem">Add your farm</h3>
+                    <p style="font-size:.92rem;color:#4a5a4a">Set up your plots and enterprises.</p>
+                </div>
+                <div
+                    style="background:#fff;padding:2rem;border-radius:20px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.04)">
+                    <div
+                        style="width:50px;height:50px;border-radius:50%;background:#1a3c2e;color:#e6b422;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;margin:0 auto 1.2rem;border:3px solid #d4a017">
+                        3</div>
+                    <h3 style="color:#1a3c2e;font-size:1.1rem;margin-bottom:.6rem">Record as you go</h3>
+                    <p style="font-size:.92rem;color:#4a5a4a">Log activities, costs, sales daily.</p>
+                </div>
+                <div
+                    style="background:#fff;padding:2rem;border-radius:20px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.04)">
+                    <div
+                        style="width:50px;height:50px;border-radius:50%;background:#1a3c2e;color:#e6b422;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.3rem;margin:0 auto 1.2rem;border:3px solid #d4a017">
+                        4</div>
+                    <h3 style="color:#1a3c2e;font-size:1.1rem;margin-bottom:.6rem">See your profit</h3>
+                    <p style="font-size:.92rem;color:#4a5a4a">Dashboard turns numbers into insights.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="pricing" style="padding:4.5rem 0">
+        <div class="container">
+            <div class="section-head center">
+                <span class="section-label">Simple pricing</span>
+                <h2 class="section-title">Start free. Upgrade when you grow.</h2>
+            </div>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h3>Starter</h3>
+                    <p style="color:#4a5a4a;font-size:.9rem">For farmers getting started</p>
+                    <div class="price">Free<span> / forever</span></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Farm record-keeping</li>
+                        <li><i class="fas fa-check"></i> Basic financial dashboard</li>
+                        <li><i class="fas fa-check"></i> Weather forecasts</li>
+                        <li><i class="fas fa-check"></i> Market prices via SMS</li>
+                        <li><i class="fas fa-check"></i> Works offline</li>
+                    </ul>
+                    <a href="/register.html" class="btn-outline">Start free</a>
+                </div>
+                <div class="price-card featured">
+                    <h3>Pro</h3>
+                    <p style="color:#4a5a4a;font-size:.9rem">For serious farmers</p>
+                    <div class="price">KES 500<span> / month</span></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Everything in Starter</li>
+                        <li><i class="fas fa-check"></i> Planning & budgets</li>
+                        <li><i class="fas fa-check"></i> Decision tools</li>
+                        <li><i class="fas fa-check"></i> Pest management</li>
+                        <li><i class="fas fa-check"></i> Priority SMS & USSD</li>
+                    </ul>
+                    <a href="/register.html" class="btn-primary" style="justify-content:center">Upgrade to Pro</a>
+                </div>
+                <div class="price-card">
+                    <h3>Business</h3>
+                    <p style="color:#4a5a4a;font-size:.9rem">For commercial farms</p>
+                    <div class="price">KES 2,000<span> / month</span></div>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Everything in Pro</li>
+                        <li><i class="fas fa-check"></i> Multi-farm management</li>
+                        <li><i class="fas fa-check"></i> Financial services</li>
+                        <li><i class="fas fa-check"></i> Supply chain tools</li>
+                        <li><i class="fas fa-check"></i> API access</li>
+                    </ul>
+                    <a href="/contact.html" class="btn-outline">Contact sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="cta-banner">
+            <h2><i class="fas fa-seedling" style="color:#e6b422"></i> Your farm deserves better records.</h2>
+            <p>Join Marcbantu Africa today and start running your farm like the business it is.</p>
+            <a href="/register.html" class="btn-primary"><i class="fas fa-rocket"></i> Start free today</a>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-brand"><i class="fas fa-seedling"></i><span>Marcbantu <span>Africa</span></span>
+                    </div>
+                    <p>Smart farm management for African farmers. Records, planning, profit tracking, and advice — all
+                        in one place.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Tools</h4>
+                    <a href="#tools">Farm records</a>
+                    <a href="#tools">Planning</a>
+                    <a href="#tools">Finance</a>
+                    <a href="#tools">Weather</a>
+                    <a href="#tools">Pest</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <a href="/about.html">About us</a>
+                    <a href="/partners.html">Partners</a>
+                    <a href="/contact.html">Contact</a>
+                    <a href="/privacy.html">Privacy</a>
+                    <a href="/terms.html">Terms</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-envelope"></i> info@marcbantu.africa</p>
+                    <p><i class="fas fa-phone"></i> +254 700 000 000</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Nairobi, Kenya</p>
+                </div>
+            </div>
+            <div class="footer-bottom">© 2025 Marcbantu Africa. All rights reserved. <span
+                    style="color:#e6b422;font-weight:600">Smart farming starts with smart management.</span></div>
+        </div>
+    </footer>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/register-sw.js"></script>
+</body>
+
+</html>

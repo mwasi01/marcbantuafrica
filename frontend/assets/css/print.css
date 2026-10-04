@@ -1,0 +1,706 @@
+/* ============================================================
+   Marcbantu Africa — Print stylesheet
+   Loaded with media="print" — activates only when printing.
+   Optimized for A4 paper. Saves ink. Keeps key branding.
+   ============================================================ */
+
+/* ============================================================
+   BASE RESET FOR PRINT
+   ============================================================ */
+@media print {
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+
+    @page {
+        size: A4 portrait;
+        margin: 18mm 14mm 18mm 14mm;
+    }
+
+    @page :first {
+        margin-top: 12mm;
+    }
+
+    html,
+    body {
+        background: #fff !important;
+        color: #000 !important;
+        font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif !important;
+        font-size: 11pt !important;
+        line-height: 1.45 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        overflow: visible !important;
+    }
+
+    /* Remove any fixed positioning — it breaks printing */
+    * {
+        position: static !important;
+        max-width: 100% !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+
+    /* ============================================================
+       HIDE NON-PRINT ELEMENTS
+       ============================================================ */
+    .no-print,
+    .navbar,
+    .navbar *,
+    .sidebar,
+    .sidebar *,
+    .topbar,
+    .topbar *,
+    .menu-toggle-app,
+    .icon-btn,
+    .user-avatar,
+    .user-area,
+    .floating-wa,
+    .btn-primary,
+    .btn-outline,
+    .btn-icon,
+    .page-btn,
+    .quick-actions,
+    .quick-action,
+    .notification-badge,
+    #notificationPanel,
+    #offline-banner,
+    #toast-container,
+    .modal-overlay,
+    .modal-overlay *,
+    .pagination,
+    #pagination,
+    #tx-pagination,
+    button:not(.print-keep),
+    .tab:not(.active),
+    .nav-links,
+    input[type="submit"],
+    input[type="button"],
+    .no-print-all,
+    .sidebar-nav,
+    .kpi-change i,
+    .screen-only,
+    video,
+    iframe:not(.print-keep),
+    .video-player,
+    .chat-input,
+    .chat-box button {
+        display: none !important;
+    }
+
+    /* ============================================================
+       LAYOUT ADJUSTMENTS
+       ============================================================ */
+    .app-layout {
+        display: block !important;
+        min-height: 0 !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .container,
+    .container-narrow {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* ============================================================
+       PRINT HEADER (auto-injected by JS)
+       ============================================================ */
+    .print-header {
+        display: flex !important;
+        justify-content: space-between;
+        align-items: flex-start;
+        border-bottom: 3px solid #1a3c2e !important;
+        padding-bottom: 12px !important;
+        margin-bottom: 20px !important;
+    }
+
+    .print-header-brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .print-header-brand i {
+        color: #d4a017 !important;
+        font-size: 26pt;
+    }
+
+    .print-header-brand h1 {
+        font-size: 18pt;
+        margin: 0;
+        color: #1a3c2e !important;
+        font-weight: 800;
+        letter-spacing: -0.5pt;
+    }
+
+    .print-header-brand h1 span {
+        color: #d4a017 !important;
+    }
+
+    .print-header-brand .tagline {
+        font-size: 8.5pt;
+        color: #4a5a4a !important;
+        margin-top: 2px;
+    }
+
+    .print-header-meta {
+        text-align: right;
+        font-size: 9pt;
+        color: #4a5a4a !important;
+    }
+
+    .print-header-meta strong {
+        color: #1a3c2e !important;
+        display: block;
+        font-size: 11pt;
+    }
+
+    .print-header-meta .doc-type {
+        font-size: 12pt;
+        color: #d4a017 !important;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5pt;
+    }
+
+    /* ============================================================
+       PRINT FOOTER (auto-injected by JS)
+       ============================================================ */
+    .print-footer {
+        display: block !important;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        border-top: 1px solid #d4d9d4 !important;
+        padding-top: 6px !important;
+        font-size: 8pt;
+        color: #6a7a6c !important;
+        text-align: center;
+    }
+
+    .print-footer .page-number::after {
+        content: "Page " counter(page);
+    }
+
+    /* ============================================================
+       PANELS / CARDS
+       ============================================================ */
+    .panel {
+        background: #fff !important;
+        border: 1px solid #cbd5cd !important;
+        border-radius: 0 !important;
+        padding: 12px 14px !important;
+        margin-bottom: 14px !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .panel-head {
+        border-bottom: 1px solid #e2e8dd !important;
+        padding-bottom: 6px !important;
+        margin-bottom: 10px !important;
+    }
+
+    .panel-head h3 {
+        font-size: 12pt !important;
+        color: #1a3c2e !important;
+        margin: 0;
+    }
+
+    .panel-head h3 i {
+        color: #d4a017 !important;
+    }
+
+    /* ============================================================
+       KPI CARDS
+       ============================================================ */
+    .kpi-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 8px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .kpi {
+        background: #f9faf7 !important;
+        border: 1px solid #cbd5cd !important;
+        border-left: 4px solid #d4a017 !important;
+        border-radius: 4px !important;
+        padding: 10px 12px !important;
+        page-break-inside: avoid;
+    }
+
+    .kpi-label {
+        font-size: 8pt !important;
+        color: #4a5a4a !important;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.3pt;
+    }
+
+    .kpi-label i {
+        display: none !important;
+    }
+
+    .kpi-value {
+        font-size: 16pt !important;
+        font-weight: 800;
+        color: #1a3c2e !important;
+        margin: 4px 0 2px !important;
+        line-height: 1.1;
+    }
+
+    .kpi-change {
+        font-size: 8pt !important;
+        color: #4a5a4a !important;
+    }
+
+    .kpi-change.up {
+        color: #2e7d32 !important;
+    }
+
+    .kpi-change.down {
+        color: #c0392b !important;
+    }
+
+    /* ============================================================
+       TABLES
+       ============================================================ */
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 10pt !important;
+        page-break-inside: auto;
+    }
+
+    thead {
+        display: table-header-group;
+        background: #e8f0e1 !important;
+    }
+
+    thead tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+
+    thead th {
+        background: #e8f0e1 !important;
+        color: #1a3c2e !important;
+        font-weight: 700 !important;
+        font-size: 9pt !important;
+        text-transform: uppercase;
+        letter-spacing: 0.3pt;
+        border: 1px solid #cbd5cd !important;
+        padding: 6px 8px !important;
+        text-align: left;
+    }
+
+    tbody tr {
+        page-break-inside: avoid;
+    }
+
+    tbody td {
+        border: 1px solid #e2e8dd !important;
+        padding: 6px 8px !important;
+        color: #1e2a1e !important;
+        vertical-align: top;
+    }
+
+    /* Zebra striping for readability */
+    tbody tr:nth-child(even) {
+        background: #fbfcf9 !important;
+    }
+
+    tfoot td {
+        border-top: 2px solid #1a3c2e !important;
+        font-weight: 700 !important;
+        background: #f9faf7 !important;
+    }
+
+    /* Table wrapper must not clip */
+    .table-wrap,
+    [class*="table"] {
+        overflow: visible !important;
+        border: none !important;
+        border-radius: 0 !important;
+    }
+
+    /* ============================================================
+       TEXT COLORS
+       ============================================================ */
+    .positive,
+    [style*="color:#2e7d32"],
+    [style*="color: #2e7d32"] {
+        color: #1b5e20 !important;
+    }
+
+    .negative,
+    [style*="color:#c0392b"],
+    [style*="color: #c0392b"] {
+        color: #b71c1c !important;
+    }
+
+    /* Remove inline color gradients in tables */
+    td[style*="color:#2e7d32"],
+    td[style*="color: #2e7d32"] {
+        color: #1b5e20 !important;
+    }
+
+    td[style*="color:#c0392b"],
+    td[style*="color: #c0392b"] {
+        color: #b71c1c !important;
+    }
+
+    /* ============================================================
+       BADGES / CHIPS
+       ============================================================ */
+    .badge,
+    .chip {
+        border: 1px solid #cbd5cd !important;
+        padding: 1px 6px !important;
+        font-size: 8pt !important;
+        border-radius: 8px !important;
+        background: #f5f8f2 !important;
+        color: #1a3c2e !important;
+        font-weight: 600 !important;
+    }
+
+    .chip-green,
+    .badge-green {
+        background: #e8f0e1 !important;
+        color: #1b5e20 !important;
+        border-color: #a5c9a5 !important;
+    }
+
+    .chip-gold,
+    .badge-gold {
+        background: #fef3d0 !important;
+        color: #7a5c00 !important;
+        border-color: #e6c76b !important;
+    }
+
+    .chip-red,
+    .badge-red {
+        background: #fde8e8 !important;
+        color: #a01a1a !important;
+        border-color: #e0a5a5 !important;
+    }
+
+    /* ============================================================
+       PROGRESS BARS
+       ============================================================ */
+    .progress-bar {
+        border: 1px solid #cbd5cd !important;
+        background: #f5f8f2 !important;
+        height: 6px !important;
+    }
+
+    .progress-fill {
+        background: #2f5d3a !important;
+    }
+
+    /* ============================================================
+       LISTS
+       ============================================================ */
+    ul,
+    ol {
+        padding-left: 20px !important;
+        margin: 8px 0 !important;
+    }
+
+    li {
+        margin-bottom: 3px;
+        page-break-inside: avoid;
+    }
+
+    /* ============================================================
+       HEADINGS
+       ============================================================ */
+    h1 {
+        font-size: 18pt;
+        margin: 0 0 8px;
+        color: #1a3c2e;
+    }
+
+    h2 {
+        font-size: 14pt;
+        margin: 14px 0 8px;
+        color: #1a3c2e;
+        page-break-after: avoid;
+    }
+
+    h3 {
+        font-size: 12pt;
+        margin: 12px 0 6px;
+        color: #1a3c2e;
+        page-break-after: avoid;
+    }
+
+    h4 {
+        font-size: 11pt;
+        margin: 10px 0 4px;
+        color: #1a3c2e;
+        page-break-after: avoid;
+    }
+
+    h5 {
+        font-size: 10pt;
+        margin: 8px 0 4px;
+        color: #1a3c2e;
+    }
+
+    p {
+        margin: 6px 0;
+        orphans: 3;
+        widows: 3;
+    }
+
+    /* ============================================================
+       PAGE BREAKS
+       ============================================================ */
+    .page-break-before {
+        page-break-before: always;
+    }
+
+    .page-break-after {
+        page-break-after: always;
+    }
+
+    .page-break-avoid {
+        page-break-inside: avoid;
+    }
+
+    .print-only {
+        display: block !important;
+    }
+
+    .screen-only {
+        display: none !important;
+    }
+
+    /* Break sections */
+    .panel+.panel {
+        page-break-before: auto;
+    }
+
+    section+section {
+        page-break-before: auto;
+    }
+
+    /* ============================================================
+       INLINE STYLES OVERRIDE
+       ============================================================ */
+    /* Override any background that would waste ink */
+    [style*="background:linear-gradient"],
+    [style*="background: linear-gradient"] {
+        background: #fff !important;
+        border: 1px solid #cbd5cd !important;
+    }
+
+    /* Dark backgrounds become light */
+    [style*="background:#1a3c2e"],
+    [style*="background: #1a3c2e"],
+    [style*="background:#2a5d3f"],
+    [style*="background: #2a5d3f"] {
+        background: #f9faf7 !important;
+        color: #1a3c2e !important;
+        border: 1px solid #cbd5cd !important;
+    }
+
+    /* Ensure white text on dark is readable */
+    [style*="color:#fff"],
+    [style*="color: #fff"],
+    [style*="color:white"] {
+        color: #1a3c2e !important;
+    }
+
+    /* Remove fixed/absolute positioning */
+    [style*="position:fixed"],
+    [style*="position: fixed"],
+    [style*="position:absolute"],
+    [style*="position: absolute"] {
+        position: static !important;
+    }
+
+    /* ============================================================
+       LINKS — show URL
+       ============================================================ */
+    a {
+        color: #1a3c2e !important;
+        text-decoration: none !important;
+    }
+
+    a[href]:not([href^="#"])::after {
+        content: " (" attr(href) ")";
+        font-size: 8pt;
+        color: #6a7a6c;
+        word-break: break-all;
+    }
+
+    /* But don't append URL to internal navigation */
+    .no-url::after,
+    .print-header a::after,
+    .panel-head a::after {
+        content: "" !important;
+    }
+
+    /* ============================================================
+       IMAGES
+       ============================================================ */
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+
+    /* Logo */
+    .logo img,
+    .print-header-brand img {
+        max-height: 60px !important;
+    }
+
+    /* ============================================================
+       SPECIFIC PAGES
+       ============================================================ */
+
+    /* Dashboard print */
+    .dashboard-page .quick-actions,
+    .dashboard-page .chart-bars,
+    .dashboard-page .bar-wrap {
+        display: none !important;
+    }
+
+    /* Records print — keep table clean */
+    .records-page .filters,
+    .records-page #filter-form {
+        display: none !important;
+    }
+
+    /* Finance print — keep KPIs, tables, hide charts */
+    .finance-page .bar-chart {
+        display: none !important;
+    }
+
+    .finance-page .progress-list {
+        display: block !important;
+    }
+
+    /* Decisions print — show inputs and results */
+    .decisions-page input,
+    .decisions-page select,
+    .decisions-page textarea {
+        border: none !important;
+        border-bottom: 1px solid #cbd5cd !important;
+        background: transparent !important;
+        padding: 2px 0 !important;
+        font-weight: 600;
+        color: #1a3c2e !important;
+    }
+
+    /* Weather print */
+    .weather-page .forecast-days {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 6px !important;
+    }
+
+    /* Market print */
+    .market-page .price-grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 6px !important;
+    }
+
+    /* ============================================================
+       WATERMARK (optional — enabled with .with-watermark)
+       ============================================================ */
+    .with-watermark::before {
+        content: "MARCBANTU";
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-30deg);
+        font-size: 100pt;
+        color: rgba(212, 160, 23, 0.08);
+        font-weight: 900;
+        letter-spacing: 10pt;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    /* ============================================================
+       PRINT-ONLY HELPERS
+       ============================================================ */
+    .print-only {
+        display: block !important;
+    }
+
+    .print-only-inline {
+        display: inline !important;
+    }
+
+    .print-only-flex {
+        display: flex !important;
+    }
+
+    /* Cover page for reports */
+    .print-cover {
+        display: flex !important;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+        page-break-after: always;
+    }
+
+    .print-cover .logo {
+        font-size: 40pt;
+        color: #1a3c2e;
+        margin-bottom: 20px;
+    }
+
+    .print-cover h1 {
+        font-size: 28pt;
+        margin-bottom: 10px;
+    }
+
+    .print-cover .subtitle {
+        font-size: 14pt;
+        color: #4a5a4a;
+        margin-bottom: 40px;
+    }
+
+    .print-cover .meta {
+        font-size: 11pt;
+        color: #6a7a6c;
+        line-height: 1.8;
+    }
+}
+
+/* ============================================================
+   SCREEN-ONLY — hide print-only content
+   ============================================================ */
+@media screen {
+
+    .print-only,
+    .print-only-inline,
+    .print-only-flex,
+    .print-header,
+    .print-footer,
+    .print-cover {
+        display: none !important;
+    }
+}

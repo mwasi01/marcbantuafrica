@@ -1,0 +1,10 @@
+# Marcbantu Africa — Python dependencies
+# Note: Cloudflare Workers Python runtime uses Pyodide (WASM).
+# Most pure-Python packages work. C-extension packages do NOT.
+
+# Core (built-in to Pyodide — listed for reference)
+# json, hmac, hashlib, base64, time, re, os — all built-in
+
+# Optional: only if running outside Workers (local tests)
+pytest==8.3.3
+pytest-asyncio==0.24.0

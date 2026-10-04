@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Marcbantu Africa</title>
+    <meta name="theme-color" content="#1a3c2e">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="stylesheet" href="/assets/css/app.css">
+    <link rel="stylesheet" href="/assets/css/print.css" media="print">
+</head>
+
+<body>
+
+    <div class="app-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand"><i class="fas fa-seedling"></i><span>Marcbantu <span>Africa</span></span></div>
+            <nav class="sidebar-nav">
+                <div class="section-label">Main</div>
+                <a href="/dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a>
+                <a href="/records.html"><i class="fas fa-book"></i> Farm Records</a>
+                <a href="/planning.html"><i class="fas fa-calendar-alt"></i> Planning</a>
+                <a href="/finance.html"><i class="fas fa-chart-pie"></i> Finance</a>
+                <a href="/decisions.html"><i class="fas fa-lightbulb"></i> Decisions</a>
+                <div class="section-label">Operations</div>
+                <a href="/operations.html"><i class="fas fa-tasks"></i> Operations</a>
+                <a href="/market.html"><i class="fas fa-store"></i> Market & Sales</a>
+                <a href="/weather.html"><i class="fas fa-cloud-sun"></i> Weather</a>
+                <a href="/pest.html"><i class="fas fa-bug"></i> Pest & Disease</a>
+                <div class="section-label">Growth</div>
+                <a href="/learning.html"><i class="fas fa-graduation-cap"></i> Learning</a>
+                <a href="/profile.html" class="active"><i class="fas fa-user-circle"></i> My Profile</a>
+                <div class="section-label">Account</div>
+                <a href="#" data-action="logout"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="topbar">
+                <div style="display:flex;align-items:center;gap:1rem">
+                    <button class="menu-toggle-app"><i class="fas fa-bars"></i></button>
+                    <h1>My Profile</h1>
+                </div>
+                <button class="btn-outline no-print" onclick="window.print()"><i class="fas fa-print"></i>
+                    Print</button>
+            </div>
+
+            <div class="profile-header"
+                style="background:linear-gradient(135deg,#2a5d3f,#1a3c2e);color:#fff;border-radius:22px;padding:2rem;display:flex;gap:1.5rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem;border:2px solid #d4a017;position:relative;overflow:hidden">
+                <div id="profile-initial" class="profile-avatar"
+                    style="width:90px;height:90px;border-radius:50%;background:#e6b422;color:#1a3c2e;display:flex;align-items:center;justify-content:center;font-size:2rem;font-weight:800;flex-shrink:0">
+                    ?</div>
+                <div style="flex:1">
+                    <h2 id="profile-name" style="font-size:1.5rem;margin-bottom:.3rem">Loading...</h2>
+                    <p style="color:#c8d6ca;font-size:.92rem">Marcbantu Africa member</p>
+                </div>
+            </div>
+
+            <div class="kpi-grid" id="profile-stats"></div>
+
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel-head">
+                        <h3><i class="fas fa-user-edit"></i> Personal Information</h3>
+                    </div>
+                    <form id="profileForm" style="display:flex;flex-direction:column;gap:12px">
+                        <label style="display:flex;flex-direction:column;gap:6px"><span
+                                style="font-size:13px;font-weight:600;color:#1a3c2e">Full Name</span><input
+                                name="full_name" type="text"></label>
+                        <label style="display:flex;flex-direction:column;gap:6px"><span
+                                style="font-size:13px;font-weight:600;color:#1a3c2e">Phone</span><input name="phone"
+                                type="tel" disabled></label>
+                        <label style="display:flex;flex-direction:column;gap:6px"><span
+                                style="font-size:13px;font-weight:600;color:#1a3c2e">Email</span><input name="email"
+                                type="email"></label>
+                        <label style="display:flex;flex-direction:column;gap:6px"><span
+                                style="font-size:13px;font-weight:600;color:#1a3c2e">County</span><input name="county"
+                                type="text"></label>
+                        <label style="display:flex;flex-direction:column;gap:6px"><span
+                                style="font-size:13px;font-weight:600;color:#1a3c2e">Location</span><input
+                                name="location" type="text"></label>
+                        <label style="display:flex;flex-direction:column;gap:6px"><span
+                                style="font-size:13px;font-weight:600;color:#1a3c2e">Language</span>
+                            <select name="language">
+                                <option value="en">English</option>
+                                <option value="sw">Swahili</option>
+                                <option value="fr">French</option>
+                            </select>
+                        </label>
+                        <button type="submit" class="btn-primary" style="justify-content:center"><i
+                                class="fas fa-save"></i> Save Changes</button>
+                    </form>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-head">
+                        <h3><i class="fas fa-star"></i> Subscription</h3>
+                    </div>
+                    <div id="subscription-info"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h3><i class="fas fa-key"></i> Change Password</h3>
+                </div>
+                <form id="passwordForm" style="display:flex;flex-direction:column;gap:12px;max-width:400px">
+                    <label style="display:flex;flex-direction:column;gap:6px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">Current Password</span><input
+                            name="current_password" type="password" required></label>
+                    <label style="display:flex;flex-direction:column;gap:6px"><span
+                            style="font-size:13px;font-weight:600;color:#1a3c2e">New Password</span><input
+                            name="new_password" type="password" required minlength="6"></label>
+                    <button type="submit" class="btn-primary" style="justify-content:center"><i class="fas fa-lock"></i>
+                        Update Password</button>
+                </form>
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h3><i class="fas fa-file-alt"></i> My Reports</h3>
+                </div>
+                <div id="reports-list"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/assets/js/api.js"></script>
+    <script src="/assets/js/app.js"></script>
+    <script src="/assets/js/profile.js"></script>
+    <script src="/assets/js/register-sw.js"></script>
+</body>
+
+</html>
