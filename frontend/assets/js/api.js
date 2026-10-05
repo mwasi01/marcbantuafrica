@@ -11,6 +11,8 @@ const API_BASE = (() => {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return 'http://localhost:8787';
     }
+    // Production Worker URL (workers.dev subdomain)
+    // Will switch to https://api.marcbantuafrica.com once custom domain is live
     return 'https://marcbantu-api.josuit-mwasi.workers.dev';
 })();
 
