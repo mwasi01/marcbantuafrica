@@ -3,10 +3,13 @@ Marcbantu Africa — Communications routes.
 SMS, USSD, WhatsApp, Voice via Africa's Talking.
 Inbound webhooks + outbound sending.
 """
+
+from js import Response, Object
 from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, to_float, log_event, require_fields,
     parse_form, generate_reference,
+    js_headers,
 )
 from constants import HTTP, ErrorCode, Channel
 from db import DB
@@ -31,11 +34,11 @@ async def _at_send_sms(env, to: str, message: str, sender_id: str = None) -> dic
         response = await fetch(
             f"{base_url}/version1/messaging",
             method='POST',
-            headers={
+            headers=js_headers({
                 'apiKey': api_key,
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept': 'application/json',
-            },
+            }),
             body=body,
         )
         if response.status != 200 and response.status != 201:
@@ -230,7 +233,7 @@ async def sms_webhook(request, env):
     text = (form.get('text') or '').strip()
 
     if not sender:
-        return Response('Missing sender', status=400, headers={'Content-Type': 'text/plain'})
+        return Response.new('Missing sender', status=400, headers=js_headers({'Content-Type': 'text/plain'}))
 
     log_event('sms_inbound', {'from': sender, 'text': text[:200]})
 
@@ -269,7 +272,7 @@ async def sms_webhook(request, env):
     if reply:
         await _at_send_sms(env, sender, reply)
 
-    return Response('OK', status=200, headers={'Content-Type': 'text/plain'})
+    return Response.new('OK', status=200, headers=js_headers({'Content-Type': 'text/plain'}))
 
 
 async def _handle_sms_command(command: str, parts: list, farmer: dict, db: DB, env) -> str:
@@ -395,7 +398,7 @@ async def ussd_handler(request, env):
     text = form.get('text', '') or ''
 
     if not phone:
-        return Response('END Invalid request', headers={'Content-Type': 'text/plain'})
+        return Response.new('END Invalid request', headers=js_headers({'Content-Type': 'text/plain'}))
 
     db = DB(env)
     farmer = await db.query_one(
@@ -437,7 +440,7 @@ async def ussd_handler(request, env):
         status='received',
     )
 
-    return Response(response, headers={'Content-Type': 'text/plain'})
+    return Response.new(response, headers=js_headers({'Content-Type': 'text/plain'}))
 
 
 async def _ussd_route(steps: list, text: str, farmer, phone: str, db: DB, env) -> str:
@@ -648,14 +651,14 @@ async def whatsapp_webhook(request, env):
         challenge = url.search_params.get('hub.challenge')
         expected = getattr(env, 'WHATSAPP_VERIFY_TOKEN', 'marcbantu-verify')
         if mode == 'subscribe' and token == expected:
-            return Response(challenge or '', headers={'Content-Type': 'text/plain'})
-        return Response('Forbidden', status=403)
+            return Response.new(challenge or '', headers=js_headers({'Content-Type': 'text/plain'}))
+        return Response.new('Forbidden', status=403)
 
     # POST messages
     try:
         body = await request.json()
     except Exception:
-        return Response('OK', status=200)
+        return Response.new('OK', status=200)
 
     # Log and extract
     entries = body.get('entry', [])
@@ -677,7 +680,7 @@ async def whatsapp_webhook(request, env):
                     status='received',
                 )
 
-    return Response('OK', status=200)
+    return Response.new('OK', status=200)
 
 
 # ============================================================
@@ -708,11 +711,11 @@ async def send_voice(request, env):
         response = await fetch(
             f"{base_url}/call",
             method='POST',
-            headers={
+            headers=js_headers({
                 'apiKey': api_key,
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'Accept': 'application/json',
-            },
+            }),
             body=f"username={username}&to={data['to']}&from={data.get('from', '')}",
         )
         result = await response.json()

@@ -3,7 +3,7 @@ Marcbantu Africa — Email Service.
 Uses MailChannels (free for Cloudflare Workers) or Resend.
 """
 import json
-from utils import now_iso, log_event
+from utils import now_iso, log_event, js_headers
 
 
 class EmailService:
@@ -39,9 +39,9 @@ class EmailService:
 
     async def _send_mailchannels(self, to: str, subject: str, html: str, text: str = None) -> dict:
         try:
-            response = await fetch("https://api.mailchannels.net/tx/v1/send", method="POST", headers={
+            response = await fetch("https://api.mailchannels.net/tx/v1/send", method="POST", headers=js_headers({
                 "Content-Type": "application/json",
-            }, body=json.dumps({
+            }), body=json.dumps({
                 "personalizations": [{"to": [{"email": to}]}],
                 "from": {"email": self.from_email, "name": self.from_name},
                 "subject": subject,

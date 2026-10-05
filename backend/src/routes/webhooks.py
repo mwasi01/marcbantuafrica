@@ -2,7 +2,9 @@
 Marcbantu Africa — Webhook routes.
 Inbound callbacks: M-Pesa, Africa's Talking delivery reports.
 """
-from utils import success_response, log_event, now_iso
+
+from js import Response, Object
+from utils import success_response, log_event, now_iso, js_headers
 from db import DB
 
 
@@ -16,7 +18,7 @@ async def mpesa_callback(request, env):
     try:
         body = await request.json()
     except Exception:
-        return Response('Invalid JSON', status=400)
+        return Response.new('Invalid JSON', status=400)
 
     log_event('mpesa_callback', {'body': body})
 
@@ -128,4 +130,4 @@ async def africastalking_callback(request, env):
     if 'callSessionState' in data or 'sessionId' in data:
         log_event('at_voice_callback', data)
 
-    return Response('OK', status=200, headers={'Content-Type': 'text/plain'})
+    return Response.new('OK', status=200, headers=js_headers({'Content-Type': 'text/plain'}))

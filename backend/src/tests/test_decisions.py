@@ -1,6 +1,8 @@
 """
 Tests for routes/decisions.py — break-even, margin, loan, risk, etc.
 """
+
+from utils import js_headers
 import pytest
 
 from routes import decisions
@@ -300,7 +302,7 @@ class TestAuthRequired:
         request = make_request(
             method="POST",
             body={"fixed_costs": 1, "variable_cost_per_unit": 1, "price_per_unit": 2},
-            headers={"Authorization": "Bearer invalid.token.here"},
+            headers=js_headers({"Authorization": "Bearer invalid.token.here"}),
         )
         response = await decisions.breakeven(request, env)
         assert response.status == 401

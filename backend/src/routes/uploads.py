@@ -2,9 +2,12 @@
 Marcbantu Africa — Upload routes.
 File uploads to R2 (photos, documents, PDFs).
 """
+
+from js import Response, Object
 from utils import (
     success_response, error_response, require_auth,
     now_iso, to_int, log_event, generate_reference,
+    js_headers,
 )
 from constants import HTTP, ErrorCode
 from db import DB
@@ -174,10 +177,10 @@ async def serve_file(request, env, file_key: str):
         if not obj:
             return error_response("File not found", status=HTTP.NOT_FOUND)
 
-        return Response(obj.body, headers={
+        return Response.new(obj.body, headers=js_headers({
             'Content-Type': obj.httpMetadata.get('contentType', 'application/octet-stream') if obj.httpMetadata else 'application/octet-stream',
             'Cache-Control': 'public, max-age=31536000',
             'Access-Control-Allow-Origin': '*',
-        })
+        }))
     except Exception:
         return error_response("File fetch failed", status=HTTP.INTERNAL_ERROR)

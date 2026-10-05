@@ -1,6 +1,8 @@
 """
 Tests for routes/auth.py — register, login, logout, me, JWT flows.
 """
+
+from utils import js_headers
 import json
 import pytest
 
@@ -182,7 +184,7 @@ class TestMe:
     async def test_invalid_token(self):
         env = make_env()
         seed_farmer(env)
-        request = make_request(headers={"Authorization": "Bearer bogus.token.x"})
+        request = make_request(headers=js_headers({"Authorization": "Bearer bogus.token.x"}))
         response = await auth.me(request, env)
         assert response.status == 401
 

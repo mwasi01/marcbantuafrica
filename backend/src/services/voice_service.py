@@ -3,7 +3,7 @@ Marcbantu Africa — Voice Service.
 Africa's Talking Voice API for outbound calls and IVR.
 """
 import json
-from utils import now_iso, log_event
+from utils import now_iso, log_event, js_headers
 
 
 AT_VOICE_PROD = "https://voice.africastalking.com"
@@ -33,11 +33,11 @@ class VoiceService:
             response = await fetch(
                 f"{self.base_url}/call",
                 method="POST",
-                headers={
+                headers=js_headers({
                     "apiKey": self.api_key,
                     "Content-Type": "application/x-www-form-urlencoded",
                     "Accept": "application/json",
-                },
+                }),
                 body=f"username={self.username}&to={to}&from={from_number}",
             )
             data = await response.json()

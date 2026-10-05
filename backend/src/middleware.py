@@ -2,10 +2,13 @@
 Marcbantu Africa — Middleware.
 Wraps route handlers with auth, rate limiting, logging, error handling.
 """
+
+from js import Response, Object
 import json
 from utils import (
     json_response, error_response, get_auth_user, log_event, log_error,
     now_iso, generate_reference,
+    js_headers,
 )
 from constants import HTTP, ErrorCode
 
@@ -24,7 +27,7 @@ def cors_headers() -> dict:
 
 def handle_options(request):
     """Handle CORS preflight."""
-    return Response(None, status=204, headers=cors_headers())
+    return Response.new(None, status=204, headers=js_headers(cors_headers()))
 
 
 # ============================================================

@@ -3,7 +3,7 @@ Marcbantu Africa — SMS Service.
 Africa's Talking integration with templates, bulk, delivery tracking.
 """
 import json
-from utils import now_iso, log_event, generate_reference
+from utils import now_iso, log_event, generate_reference, js_headers
 
 
 AT_PROD_URL = "https://api.africastalking.com"
@@ -40,11 +40,11 @@ class SMSService:
             response = await fetch(
                 f"{self.base_url}/version1/messaging",
                 method="POST",
-                headers={
+                headers=js_headers({
                     "apiKey": self.api_key,
                     "Content-Type": "application/x-www-form-urlencoded",
                     "Accept": "application/json",
-                },
+                }),
                 body=body,
             )
             data = await response.json()
@@ -90,11 +90,11 @@ class SMSService:
             response = await fetch(
                 f"{self.base_url}/version1/messaging",
                 method="POST",
-                headers={
+                headers=js_headers({
                     "apiKey": self.api_key,
                     "Content-Type": "application/x-www-form-urlencoded",
                     "Accept": "application/json",
-                },
+                }),
                 body=body,
             )
             data = await response.json()
