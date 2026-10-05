@@ -7,6 +7,7 @@ Each calculation is optionally saved to history for later review.
 from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, to_float, log_event, require_fields,
+    _sp,
 )
 from validators import (
     ValidationError,
@@ -503,7 +504,7 @@ async def enterprise_comparison(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -586,7 +587,7 @@ async def decision_history(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
     limit = min(to_int(url.search_params.get('limit', 20), 20), 100)
 
     where = ["farmer_id = ?", "action LIKE 'decision_%'"]

@@ -7,6 +7,7 @@ import json
 from utils import (
     success_response, error_response, require_auth,
     now_iso, to_int, to_float, log_event,
+    _sp,
 )
 from constants import HTTP, ErrorCode
 from db import DB
@@ -177,7 +178,7 @@ async def get_weather(request, env):
     if err:
         return err
 
-    url = request.url
+    url = _sp(request)
     lat = to_float(url.search_params.get('lat'), -1.286389)
     lon = to_float(url.search_params.get('lon'), 36.817223)
     days = min(max(to_int(url.search_params.get('days', 7), 7), 1), 16)
@@ -256,7 +257,7 @@ async def rainfall_tracking(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     # Get location from farm if provided
     farm_id = url.search_params.get('farm_id')
@@ -366,7 +367,7 @@ async def alerts(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     farm_id = url.search_params.get('farm_id')
     if farm_id:
@@ -495,7 +496,7 @@ async def historical(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     farm_id = url.search_params.get('farm_id')
     if farm_id:

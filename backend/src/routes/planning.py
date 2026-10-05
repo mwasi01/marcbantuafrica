@@ -5,6 +5,7 @@ Budgets, budget items, cash flow forecasts, seasonal planning.
 from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, to_float, log_event, require_fields, paginated_response,
+    _sp,
 )
 from constants import HTTP, ErrorCode, TransactionType
 from db import DB
@@ -58,7 +59,7 @@ async def list_budgets(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -435,7 +436,7 @@ async def cash_flow_forecast(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -513,7 +514,7 @@ async def seasonal_plan(request, env):
     if err:
         return err
 
-    url = request.url
+    url = _sp(request)
     farm_id = url.search_params.get('farm_id')
 
     if not farm_id:

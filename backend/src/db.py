@@ -14,20 +14,31 @@ class DB:
     # CORE QUERIES
     # ========================================================
     async def query(self, sql: str, params: list = None) -> list:
-        """Run a SELECT and return all rows as list of dicts."""
+        """Run a SELECT and return all rows as list of Python dicts."""
         stmt = self.db.prepare(sql)
         if params:
             stmt = stmt.bind(*params)
         result = await stmt.all()
-        return result.results if result and result.results else []
+        if not result or not result.results:
+            return []
+        rows = result.results
+        if hasattr(rows, "to_py"):
+            rows = rows.to_py()
+        return list(rows)
+
 
     async def query_one(self, sql: str, params: list = None) -> dict | None:
-        """Run a SELECT and return first row or None."""
+        """Run a SELECT and return first row as a Python dict or None."""
         stmt = self.db.prepare(sql)
         if params:
             stmt = stmt.bind(*params)
         result = await stmt.first()
-        return result if result else None
+        if not result:
+            return None
+        if hasattr(result, "to_py"):
+            return result.to_py()
+        return result
+
 
     async def execute(self, sql: str, params: list = None):
         """Run INSERT/UPDATE/DELETE. Returns result meta."""

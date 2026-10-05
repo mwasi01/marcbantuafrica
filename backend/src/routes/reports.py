@@ -5,6 +5,7 @@ Generate PDF/CSV/JSON reports for farmers.
 from utils import (
     success_response, error_response, require_auth,
     now_iso, to_int, to_float, log_event, json_response,
+    _sp,
 )
 from constants import HTTP, ErrorCode
 from db import DB
@@ -37,7 +38,7 @@ async def profit_loss_report(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     date_from, date_to = _date_range(url)
     farm_id = url.search_params.get('farm_id')
@@ -105,7 +106,7 @@ async def enterprise_report(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     date_from, date_to = _date_range(url)
     farm_id = url.search_params.get('farm_id')
@@ -162,7 +163,7 @@ async def cash_flow_report(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
     months = min(max(to_int(url.search_params.get('months', 6), 6), 1), 24)
     farm_id = url.search_params.get('farm_id')
 

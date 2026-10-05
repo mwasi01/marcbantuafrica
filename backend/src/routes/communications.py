@@ -10,6 +10,7 @@ from utils import (
     now_iso, to_int, to_float, log_event, require_fields,
     parse_form, generate_reference,
     js_headers,
+    _sp,
 )
 from constants import HTTP, ErrorCode, Channel
 from db import DB
@@ -645,7 +646,7 @@ async def whatsapp_webhook(request, env):
     """
     # GET verification
     if request.method == 'GET':
-        url = request.url
+        url = _sp(request)
         mode = url.search_params.get('hub.mode')
         token = url.search_params.get('hub.verify_token')
         challenge = url.search_params.get('hub.challenge')
@@ -748,7 +749,7 @@ async def log(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["farmer_id = ?"]
     params = [user['id']]

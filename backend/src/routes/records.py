@@ -7,6 +7,7 @@ from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, to_float, log_event, get_int_query, get_query,
     generate_reference, paginated_response,
+    _sp,
 )
 from validators import ValidationError, validate_record
 from constants import HTTP, ErrorCode, RecordType
@@ -125,7 +126,7 @@ async def list_records(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user["id"]]
@@ -427,7 +428,7 @@ async def get_summary(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user["id"]]
@@ -587,7 +588,7 @@ async def list_by_enterprise(request, env, enterprise_id: int):
                              status=HTTP.NOT_FOUND,
                              code=ErrorCode.NOT_FOUND)
 
-    url = request.url
+    url = _sp(request)
     page = to_int(url.search_params.get("page", 1), 1)
     page_size = to_int(url.search_params.get("page_size", 50), 50)
 
@@ -625,7 +626,7 @@ async def list_by_plot(request, env, plot_id: int):
                              status=HTTP.NOT_FOUND,
                              code=ErrorCode.NOT_FOUND)
 
-    url = request.url
+    url = _sp(request)
     page = to_int(url.search_params.get("page", 1), 1)
     page_size = to_int(url.search_params.get("page_size", 50), 50)
 

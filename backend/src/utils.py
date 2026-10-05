@@ -227,20 +227,51 @@ async def parse_form(request) -> dict:
 
 
 def get_query(request, key: str, default=None):
-    """Get a query parameter."""
+    """Get a query parameter (Pyodide-safe)."""
     try:
-        return request.url.search_params.get(key, default)
+        from urllib.parse import urlparse, parse_qs
+        raw = str(request.url)
+        parsed = urlparse(raw)
+        values = parse_qs(parsed.query)
+        if key in values and values[key]:
+            return values[key][0]
+        return default
     except Exception:
         return default
 
 
 def get_int_query(request, key: str, default: int = 0) -> int:
-    """Get an integer query parameter."""
+    """Get an integer query parameter (Pyodide-safe)."""
+    val = get_query(request, key)
     try:
-        val = request.url.search_params.get(key)
-        return int(val) if val else default
-    except Exception:
+        return int(val) if val is not None and val != "" else default
+    except (TypeError, ValueError):
         return default
+
+
+# ============================================================
+# QUERY PARAM SHIM (drop-in replacement for url.search_params)
+# ============================================================
+class _SearchParams:
+    """Mimics the JS URL object with .search_params.get()/.has()."""
+    def __init__(self, request):
+        self._request = request
+        # Some code does url.search_params.get(...) — expose self as that.
+        self.search_params = self
+
+    def get(self, key, default=None):
+        return get_query(self._request, key, default)
+
+    def has(self, key):
+        return get_query(self._request, key) is not None
+
+
+def _sp(request) -> _SearchParams:
+    """Return an object with .get()/.has() that works on Pyodide.
+
+    Also exposes .search_params so `url.search_params.get(...)` works.
+    """
+    return _SearchParams(request)
 
 
 # ============================================================

@@ -6,6 +6,7 @@ from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, to_float, log_event, require_fields,
     paginated_response,
+    _sp,
 )
 from validators import (
     ValidationError,
@@ -61,7 +62,7 @@ async def list_tasks(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -330,7 +331,7 @@ async def list_workers(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -525,7 +526,7 @@ async def list_attendance(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -580,7 +581,7 @@ async def list_equipment(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -766,7 +767,7 @@ async def operations_dashboard(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
     farm_id = url.search_params.get('farm_id')
 
     farm_filter = ""

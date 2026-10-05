@@ -6,6 +6,7 @@ pest library reference, AI-powered photo diagnosis, outbreak alerts.
 from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, to_float, log_event, require_fields, paginated_response,
+    _sp,
 )
 from validators import (
     ValidationError,
@@ -53,7 +54,7 @@ async def list_scouting(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -239,7 +240,7 @@ async def list_treatments(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -350,7 +351,7 @@ async def library(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["1=1"]
     params = []
@@ -487,7 +488,7 @@ async def alerts(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     farm_id = url.search_params.get('farm_id')
     if not farm_id:
@@ -545,7 +546,7 @@ async def inventory(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
     where = ["f.farmer_id = ?"]
     params = [user['id']]
 
@@ -616,7 +617,7 @@ async def list_ipm(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
     where = ["f.farmer_id = ?"]
     params = [user['id']]
 
@@ -685,7 +686,7 @@ async def pest_dashboard(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]

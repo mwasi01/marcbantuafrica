@@ -5,6 +5,7 @@ Partner directory and applications.
 from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, log_event, require_fields,
+    _sp,
 )
 from constants import HTTP, ErrorCode
 from db import DB
@@ -20,7 +21,7 @@ async def list_partners(request, env):
     ('cooperative', 'processor', 'institution') plus system_config for formal partners.
     """
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     # In production, this would query a dedicated partners table.
     # For now, use system_config to store partner info.

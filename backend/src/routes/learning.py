@@ -8,6 +8,7 @@ from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, to_float, log_event, require_fields,
     paginated_response, generate_reference, get_int_query,
+    _sp,
 )
 from constants import HTTP, ErrorCode
 from db import DB
@@ -32,7 +33,7 @@ async def list_courses(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["published = 1"]
     params = []
@@ -300,10 +301,11 @@ async def update_progress(request, env):
 
     # Recalculate overall progress
     total_lessons = await db.count('lessons', 'course_id = ?', [course_id])
-    completed_lessons = await db.query_one("""
+    _cl = await db.query_one("""
         SELECT COUNT(*) as total FROM lesson_progress
         WHERE enrollment_id = ? AND completed = 1
-    """, [enrollment['id']])['total']
+    """, [enrollment['id']])
+    completed_lessons = _cl['total'] if _cl else 0
 
     new_progress = int((completed_lessons / total_lessons) * 100) if total_lessons > 0 else 0
     is_complete = 1 if new_progress >= 100 else 0
@@ -346,7 +348,7 @@ async def list_videos(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["published = 1"]
     params = []
@@ -513,7 +515,7 @@ async def chat_history(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
     session_id = url.search_params.get('session_id')
 
     if session_id:
@@ -555,7 +557,7 @@ async def list_forum_topics(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["1=1"]
     params = []
@@ -725,7 +727,7 @@ async def list_experts(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["available = 1"]
     params = []

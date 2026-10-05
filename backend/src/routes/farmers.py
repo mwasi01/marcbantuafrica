@@ -37,17 +37,19 @@ async def get_profile(request, env):
 
     # Enrich with counts
     farmer['farm_count'] = await db.count('farms', 'farmer_id = ?', [user['id']])
-    farmer['record_count'] = await db.query_one("""
+    _rc = await db.query_one("""
         SELECT COUNT(*) as total FROM records r
         JOIN farms f ON r.farm_id = f.id
         WHERE f.farmer_id = ?
-    """, [user['id']])['total']
+    """, [user['id']])
+    farmer['record_count'] = _rc['total'] if _rc else 0
 
-    farmer['enterprise_count'] = await db.query_one("""
+    _ec = await db.query_one("""
         SELECT COUNT(*) as total FROM enterprises e
         JOIN farms f ON e.farm_id = f.id
         WHERE f.farmer_id = ? AND e.status = 'active'
-    """, [user['id']])['total']
+    """, [user['id']])
+    farmer['enterprise_count'] = _ec['total'] if _ec else 0
 
     return success_response(farmer)
 
@@ -273,11 +275,12 @@ async def subscription_info(request, env):
     # Current usage
     farm_count = await db.count('farms', 'farmer_id = ?', [user['id']])
 
-    record_count_month = await db.query_one("""
+    _rcm = await db.query_one("""
         SELECT COUNT(*) as total FROM records r
         JOIN farms f ON r.farm_id = f.id
         WHERE f.farmer_id = ? AND r.record_date >= date('now', 'start of month')
-    """, [user['id']])['total']
+    """, [user['id']])
+    record_count_month = _rcm['total'] if _rcm else 0
 
     return success_response({
         'tier': tier,

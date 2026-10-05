@@ -5,6 +5,7 @@ Transactions, P&L, cash flow, dashboards, expense analytics.
 from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, to_float, log_event, get_int_query, paginated_response,
+    _sp,
 )
 from validators import ValidationError, validate_transaction
 from constants import (
@@ -51,7 +52,7 @@ async def list_transactions(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -255,7 +256,7 @@ async def profit_loss(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -383,7 +384,7 @@ async def dashboard_summary(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -512,7 +513,7 @@ async def cash_flow(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -589,7 +590,7 @@ async def expense_breakdown(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?", "t.type = 'expense'"]
     params = [user['id']]
@@ -659,7 +660,7 @@ async def enterprise_performance(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]

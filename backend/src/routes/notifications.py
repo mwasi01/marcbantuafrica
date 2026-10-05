@@ -5,6 +5,7 @@ In-app notifications, device tokens for push, mark read, unread counts.
 from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, log_event, require_fields,
+    _sp,
 )
 from constants import HTTP, ErrorCode, NotificationType
 from db import DB
@@ -22,7 +23,7 @@ async def list_notifications(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["farmer_id = ?"]
     params = [user['id']]

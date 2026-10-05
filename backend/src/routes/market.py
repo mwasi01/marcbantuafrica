@@ -5,6 +5,7 @@ Market prices, farmer sales, buyer directory, forward contracts, price alerts.
 from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, to_float, log_event, require_fields, paginated_response,
+    _sp,
 )
 from validators import ValidationError, validate_sale
 from constants import HTTP, ErrorCode, PaymentStatus
@@ -41,7 +42,7 @@ async def prices(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["1=1"]
     params = []
@@ -88,7 +89,7 @@ async def price_history(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     crop = url.search_params.get('crop')
     if not crop:
@@ -184,7 +185,7 @@ async def list_sales(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -384,7 +385,7 @@ async def list_buyers(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["active = 1"]
     params = []
@@ -502,7 +503,7 @@ async def list_contracts(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
@@ -717,7 +718,7 @@ async def sales_summary(request, env):
         return err
 
     db = DB(env)
-    url = request.url
+    url = _sp(request)
 
     where = ["f.farmer_id = ?"]
     params = [user['id']]
