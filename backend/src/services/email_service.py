@@ -9,7 +9,7 @@ from utils import now_iso, log_event
 class EmailService:
     def __init__(self, env):
         self.env = env
-        self.from_email = getattr(env, "EMAIL_FROM", "noreply@marcbantu.africa") or "noreply@marcbantu.africa"
+        self.from_email = getattr(env, "EMAIL_FROM", "noreply@marcbantuafrica.com") or "noreply@marcbantuafrica.com"
         self.from_name = getattr(env, "APP_NAME", "Marcbantu Africa") or "Marcbantu Africa"
         self.resend_key = getattr(env, "RESEND_API_KEY", "") or ""
 
@@ -62,7 +62,7 @@ class EmailService:
         <div style="font-family:sans-serif;max-width:600px;margin:auto;">
           <h2 style="color:#1a3c2e;">Welcome, {name}!</h2>
           <p>Your Marcbantu Africa account is ready. Start by adding your first farm.</p>
-          <p><a href="https://marcbantu.africa/dashboard.html" style="background:#e6b422;color:#1a3c2e;padding:10px 20px;border-radius:20px;text-decoration:none;font-weight:bold;">Open your dashboard</a></p>
+          <p><a href="https://marcbantuafrica.com/dashboard.html" style="background:#e6b422;color:#1a3c2e;padding:10px 20px;border-radius:20px;text-decoration:none;font-weight:bold;">Open your dashboard</a></p>
           <p style="color:#666;font-size:12px;margin-top:30px;">Marcbantu Africa — Smart farming starts with smart management.</p>
         </div>
         """
@@ -80,7 +80,7 @@ class EmailService:
             <tr><td style="padding:8px;border-bottom:1px solid #eee;">Expenses</td><td style="padding:8px;border-bottom:1px solid #eee;text-align:right;">KES {expenses:,.0f}</td></tr>
             <tr><td style="padding:8px;font-weight:bold;">Profit</td><td style="padding:8px;text-align:right;font-weight:bold;color:{'#2e7d32' if profit >= 0 else '#c0392b'};">KES {profit:,.0f}</td></tr>
           </table>
-          <p style="margin-top:20px;"><a href="https://marcbantu.africa/finance.html" style="color:#e6b422;">View full report →</a></p>
+          <p style="margin-top:20px;"><a href="https://marcbantuafrica.com/finance.html" style="color:#e6b422;">View full report →</a></p>
         </div>
         """
         return subject, html

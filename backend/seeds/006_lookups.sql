@@ -10,7 +10,7 @@ VALUES
     ('app.name', 'Marcbantu Africa', 'string', 'Application name', 'general', 1),
     ('app.tagline', 'Smart farming starts with smart management.', 'string', 'Tagline', 'general', 1),
     ('app.version', '1.0.0', 'string', 'Current version', 'general', 1),
-    ('app.support_email', 'support@marcbantu.africa', 'string', 'Support email', 'general', 1),
+    ('app.support_email', 'support@marcbantuafrica.com', 'string', 'Support email', 'general', 1),
     ('app.support_phone', '+254700000000', 'string', 'Support phone', 'general', 1),
 
     ('subscription.starter_price', '0', 'number', 'Starter tier monthly price (KES)', 'billing', 1),
@@ -159,7 +159,7 @@ VALUES
      'crop,market,price,target', 'en'),
 
     ('REGISTER_CONFIRM', 'Registration confirmation',
-     'Hi {name}, welcome to Marcbantu! Your account is ready. Visit marcbantu.africa to start.',
+     'Hi {name}, welcome to Marcbantu! Your account is ready. Visit marcbantuafrica.com to start.',
      'name', 'en');
 
 -- ============================================================
@@ -196,7 +196,7 @@ VALUES
      '0:main', 'main', 1),
 
     ('register', 'Register',
-     'To register, visit marcbantu.africa or ask your extension officer.',
+     'To register, visit marcbantuafrica.com or ask your extension officer.',
      NULL, NULL, 1);
 
 -- ============================================================

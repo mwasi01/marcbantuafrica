@@ -11,7 +11,7 @@ const API_BASE = (() => {
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return 'http://localhost:8787';
     }
-    return 'https://api.marcbantu.africa';
+    return 'https://marcbantu-api.josuit-mwasi.workers.dev';
 })();
 
 const TOKEN_KEY = 'marcbantu_token';

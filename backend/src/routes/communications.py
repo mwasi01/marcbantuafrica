@@ -259,7 +259,7 @@ async def sms_webhook(request, env):
 
     if not farmer:
         if command == 'REGISTER':
-            reply = "Welcome to Marcbantu! Visit marcbantu.africa to register. Reply HELP for commands."
+            reply = "Welcome to Marcbantu! Visit marcbantuafrica.com to register. Reply HELP for commands."
         else:
             reply = "Hi! You're not registered. Reply REGISTER to get started with Marcbantu."
     else:
@@ -308,7 +308,7 @@ async def _handle_sms_command(command: str, parts: list, farmer: dict, db: DB, e
             [farmer['id']]
         )
         if not farm:
-            return "No active farm found. Add a farm at marcbantu.africa"
+            return "No active farm found. Add a farm at marcbantuafrica.com"
 
         await db.insert('records', {
             'farm_id': farm['id'],
@@ -327,7 +327,7 @@ async def _handle_sms_command(command: str, parts: list, farmer: dict, db: DB, e
             [farmer['id']]
         )
         if not farm:
-            return "No active farm. Visit marcbantu.africa"
+            return "No active farm. Visit marcbantuafrica.com"
 
         totals = await db.query_one("""
             SELECT
@@ -352,7 +352,7 @@ async def _handle_sms_command(command: str, parts: list, farmer: dict, db: DB, e
         """, [farmer['id']])
 
         if not farm:
-            return "Set your farm location at marcbantu.africa for weather."
+            return "Set your farm location at marcbantuafrica.com for weather."
 
         lat, lon = farm['latitude'], farm['longitude']
         try:
@@ -446,9 +446,9 @@ async def _ussd_route(steps: list, text: str, farmer, phone: str, db: DB, env) -
         if not steps:
             return "CON Welcome to Marcbantu\n1. Learn more\n2. Register"
         if steps[0] == '1':
-            return "END Marcbantu helps farmers manage records, plan, and grow profit. Visit marcbantu.africa"
+            return "END Marcbantu helps farmers manage records, plan, and grow profit. Visit marcbantuafrica.com"
         if steps[0] == '2':
-            return "END Visit marcbantu.africa to register. Thank you!"
+            return "END Visit marcbantuafrica.com to register. Thank you!"
         return "END Invalid option"
 
     # Main menu

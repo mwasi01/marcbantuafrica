@@ -82,7 +82,7 @@ async def upload_file(request, env):
         return error_response("Upload failed", status=HTTP.INTERNAL_ERROR, code=ErrorCode.INTERNAL_ERROR)
 
     # Build public URL (in production, use a signed URL or public bucket)
-    url = f"https://files.marcbantu.africa/{file_key}"
+    url = f"https://files.marcbantuafrica.com/{file_key}"
 
     # Save metadata
     db = DB(env)

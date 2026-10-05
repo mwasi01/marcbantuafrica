@@ -201,7 +201,7 @@ if [ "$DRY_RUN" != true ]; then
     if [ "$ENV" = "staging" ]; then
         API_URL="https://marcbantu-api-staging.workers.dev"
     else
-        API_URL="https://api.marcbantu.africa"
+        API_URL="https://api.marcbantuafrica.com"
     fi
 
     log "Checking API health..."
@@ -230,7 +230,7 @@ if [ "$DEPLOY_BACKEND" = true ]; then
     if [ "$ENV" = "staging" ]; then
         echo "  Backend:  https://marcbantu-api-staging.workers.dev"
     else
-        echo "  Backend:  https://api.marcbantu.africa"
+        echo "  Backend:  https://api.marcbantuafrica.com"
     fi
 fi
 
@@ -238,7 +238,7 @@ if [ "$DEPLOY_FRONTEND" = true ]; then
     if [ "$ENV" = "staging" ]; then
         echo "  Frontend: https://marcbantu-staging.pages.dev"
     else
-        echo "  Frontend: https://marcbantu.africa"
+        echo "  Frontend: https://marcbantuafrica.com"
     fi
 fi
 

@@ -74,12 +74,12 @@ UPDATE courses SET lesson_count = (SELECT COUNT(*) FROM lessons WHERE course_id 
 -- ============================================================
 INSERT OR IGNORE INTO videos (title, description, video_url, duration_seconds, category, language, published)
 VALUES
-    ('How to keep farm records that grow profit', 'Introduction to simple farm record-keeping.', 'https://stream.marcbantu.africa/video1', 765, 'Management', 'en', 1),
-    ('Planning your season in 30 minutes', 'Step-by-step seasonal planning walkthrough.', 'https://stream.marcbantu.africa/video2', 500, 'Planning', 'en', 1),
-    ('Break-even analysis for small farms', 'Calculate your break-even point.', 'https://stream.marcbantu.africa/video3', 910, 'Finance', 'en', 1),
-    ('Dairy record keeping that pays', 'Simple dairy records for small herds.', 'https://stream.marcbantu.africa/video4', 630, 'Livestock', 'en', 1),
-    ('Marginal analysis: is the next acre worth it?', 'Deciding on farm expansion.', 'https://stream.marcbantu.africa/video5', 1080, 'Decisions', 'en', 1),
-    ('Using M-Pesa for farm payments', 'Recording mobile money transactions.', 'https://stream.marcbantu.africa/video6', 435, 'Finance', 'en', 1);
+    ('How to keep farm records that grow profit', 'Introduction to simple farm record-keeping.', 'https://stream.marcbantuafrica.com/video1', 765, 'Management', 'en', 1),
+    ('Planning your season in 30 minutes', 'Step-by-step seasonal planning walkthrough.', 'https://stream.marcbantuafrica.com/video2', 500, 'Planning', 'en', 1),
+    ('Break-even analysis for small farms', 'Calculate your break-even point.', 'https://stream.marcbantuafrica.com/video3', 910, 'Finance', 'en', 1),
+    ('Dairy record keeping that pays', 'Simple dairy records for small herds.', 'https://stream.marcbantuafrica.com/video4', 630, 'Livestock', 'en', 1),
+    ('Marginal analysis: is the next acre worth it?', 'Deciding on farm expansion.', 'https://stream.marcbantuafrica.com/video5', 1080, 'Decisions', 'en', 1),
+    ('Using M-Pesa for farm payments', 'Recording mobile money transactions.', 'https://stream.marcbantuafrica.com/video6', 435, 'Finance', 'en', 1);
 
 -- ============================================================
 -- ENROLLMENTS (sample — assign courses to farmers)

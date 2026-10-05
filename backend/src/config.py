@@ -43,8 +43,8 @@ class Config:
         self.AMIS_API_URL = getattr(env, 'AMIS_API_URL', 'https://amis.co.ke/api')
 
         # Email
-        self.EMAIL_FROM = getattr(env, 'EMAIL_FROM', 'noreply@marcbantu.africa')
-        self.SUPPORT_EMAIL = getattr(env, 'SUPPORT_EMAIL', 'support@marcbantu.africa')
+        self.EMAIL_FROM = getattr(env, 'EMAIL_FROM', 'noreply@marcbantuafrica.com')
+        self.SUPPORT_EMAIL = getattr(env, 'SUPPORT_EMAIL', 'support@marcbantuafrica.com')
 
         # Feature flags
         self.FEATURE_SMS = getattr(env, 'FEATURE_SMS', 'true') == 'true'

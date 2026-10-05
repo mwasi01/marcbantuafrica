@@ -7,7 +7,7 @@ INSERT OR IGNORE INTO farmers
     (phone, email, full_name, password_hash, country, county, location, language,
      subscription_tier, subscription_expires_at, verified, verified_at)
 VALUES
-    ('+254700000001', 'admin@marcbantu.africa', 'Marcbantu Admin',
+    ('+254700000001', 'admin@marcbantuafrica.com', 'Marcbantu Admin',
      'YWRtaW5zYWx0$cGFzc3dvcmRfaGFzaF9hZG1pbg',
      'Kenya', 'Nairobi', 'Westlands', 'en', 'business',
      datetime('now', '+10 years'), 1, datetime('now')),
