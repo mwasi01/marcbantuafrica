@@ -236,6 +236,8 @@ async def _fetch_amis_prices(crops: list, env) -> list:
     # url = f"https://amis.co.ke/api/prices?key={amis_key}&crops={','.join(crops)}"
     # response = await fetch(url)
     # raw = await response.json()
+ if hasattr(raw, 'to_py'):
+     raw = raw.to_py()
     # return normalize_amis(raw)
 
     return []

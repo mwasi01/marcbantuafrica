@@ -34,6 +34,10 @@ class EmailService:
                 "text": text or "",
             }))
             data = await response.json()
+
+            if hasattr(data, 'to_py'):
+
+                data = data.to_py()
             return {"success": response.status < 300, "raw": data}
         except Exception as e:
             log_event("email_resend_failed", {"error": str(e)})

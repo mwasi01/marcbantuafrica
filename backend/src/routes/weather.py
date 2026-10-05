@@ -214,6 +214,12 @@ async def get_weather(request, env):
             return error_response("Weather service unavailable", status=HTTP.SERVICE_UNAVAILABLE)
 
         raw = await response.json()
+
+
+        if hasattr(raw, 'to_py'):
+
+
+            raw = raw.to_py()
     except Exception as e:
         log_event('weather_fetch_failed', {'error': str(e), 'lat': lat, 'lon': lon})
         return error_response("Weather fetch failed", status=HTTP.SERVICE_UNAVAILABLE)
@@ -318,6 +324,10 @@ async def rainfall_tracking(request, env):
         if response.status != 200:
             return error_response("Rainfall service unavailable", status=HTTP.SERVICE_UNAVAILABLE)
         raw = await response.json()
+
+        if hasattr(raw, 'to_py'):
+
+            raw = raw.to_py()
     except Exception as e:
         log_event('rainfall_fetch_failed', {'error': str(e)})
         return error_response("Rainfall fetch failed", status=HTTP.SERVICE_UNAVAILABLE)
@@ -410,6 +420,10 @@ async def alerts(request, env):
         try:
             response = await fetch(api_url)
             raw = await response.json()
+
+            if hasattr(raw, 'to_py'):
+
+                raw = raw.to_py()
             current = _summarize_current(raw.get('current', {}))
             daily = _summarize_daily(raw.get('daily', {}))
             raw_weather = {
@@ -558,6 +572,10 @@ async def historical(request, env):
         if response.status != 200:
             return error_response("Historical weather unavailable", status=HTTP.SERVICE_UNAVAILABLE)
         raw = await response.json()
+
+        if hasattr(raw, 'to_py'):
+
+            raw = raw.to_py()
     except Exception as e:
         log_event('historical_weather_failed', {'error': str(e)})
         return error_response("Fetch failed", status=HTTP.SERVICE_UNAVAILABLE)

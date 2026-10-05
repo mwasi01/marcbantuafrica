@@ -50,6 +50,10 @@ class SMSService:
                 body=body,
             )
             data = await response.json()
+
+            if hasattr(data, 'to_py'):
+
+                data = data.to_py()
             if response.status not in (200, 201):
                 return {"success": False, "error": f"AT {response.status}", "raw": data}
 
@@ -100,6 +104,10 @@ class SMSService:
                 body=body,
             )
             data = await response.json()
+
+            if hasattr(data, 'to_py'):
+
+                data = data.to_py()
             recipients_data = (
                 data.get("SMSMessageData", {}).get("Recipients", [])
             )

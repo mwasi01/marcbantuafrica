@@ -50,6 +50,10 @@ class PaymentService:
                 },
             )
             data = await response.json()
+
+            if hasattr(data, 'to_py'):
+
+                data = data.to_py()
             return data.get("access_token")
         except Exception as e:
             log_event("mpesa_token_failed", {"error": str(e)})
@@ -104,6 +108,10 @@ class PaymentService:
                 body=json.dumps(payload),
             )
             data = await response.json()
+
+            if hasattr(data, 'to_py'):
+
+                data = data.to_py()
             return {
                 "success": response.status < 300,
                 "checkout_request_id": data.get("CheckoutRequestID"),
@@ -146,6 +154,10 @@ class PaymentService:
                 body=json.dumps(payload),
             )
             data = await response.json()
+
+            if hasattr(data, 'to_py'):
+
+                data = data.to_py()
             return {"success": response.status < 300, "raw": data}
         except Exception as e:
             return {"success": False, "error": str(e)}

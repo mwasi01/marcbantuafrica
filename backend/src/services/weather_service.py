@@ -179,6 +179,10 @@ class WeatherService:
                 log_event("weather_fetch_status", {"status": response.status})
                 return None
             raw = await response.json()
+
+            if hasattr(raw, 'to_py'):
+
+                raw = raw.to_py()
         except Exception as e:
             log_event("weather_fetch_failed", {"error": str(e)})
             return None
@@ -223,6 +227,10 @@ class WeatherService:
             if response.status != 200:
                 return None
             raw = await response.json()
+
+            if hasattr(raw, 'to_py'):
+
+                raw = raw.to_py()
         except Exception as e:
             log_event("rainfall_fetch_failed", {"error": str(e)})
             return None
@@ -338,6 +346,10 @@ class WeatherService:
             if response.status != 200:
                 return None
             raw = await response.json()
+
+            if hasattr(raw, 'to_py'):
+
+                raw = raw.to_py()
         except Exception as e:
             log_event("historical_weather_failed", {"error": str(e)})
             return None

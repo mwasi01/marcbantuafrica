@@ -46,6 +46,12 @@ async def _at_send_sms(env, to: str, message: str, sender_id: str = None) -> dic
             return {'error': f'AT returned {response.status}', 'status': response.status}
 
         data = await response.json()
+
+
+        if hasattr(data, 'to_py'):
+
+
+            data = data.to_py()
         return data
     except Exception as e:
         return {'error': str(e)}
@@ -369,6 +375,10 @@ async def _handle_sms_command(command: str, parts: list, farmer: dict, db: DB, e
             )
             resp = await fetch(url)
             data = await resp.json()
+
+            if hasattr(data, 'to_py'):
+
+                data = data.to_py()
             current = data.get('current', {})
             daily = data.get('daily', {})
             days = daily.get('time', [])
@@ -562,6 +572,10 @@ async def _ussd_route(steps: list, text: str, farmer, phone: str, db: DB, env) -
             )
             resp = await fetch(url)
             data = await resp.json()
+
+            if hasattr(data, 'to_py'):
+
+                data = data.to_py()
             curr = data.get('current', {})
             daily = data.get('daily', {})
             return (
@@ -622,6 +636,10 @@ async def send_whatsapp(request, env):
             body=__import__('json').dumps(payload),
         )
         result = await response.json()
+
+        if hasattr(result, 'to_py'):
+
+            result = result.to_py()
         status = 'sent' if response.status < 300 else 'failed'
     except Exception as e:
         return error_response(f"WhatsApp error: {str(e)}", status=HTTP.SERVICE_UNAVAILABLE)
@@ -720,6 +738,10 @@ async def send_voice(request, env):
             body=f"username={username}&to={data['to']}&from={data.get('from', '')}",
         )
         result = await response.json()
+
+        if hasattr(result, 'to_py'):
+
+            result = result.to_py()
     except Exception as e:
         return error_response(f"Voice error: {str(e)}", status=HTTP.SERVICE_UNAVAILABLE)
 

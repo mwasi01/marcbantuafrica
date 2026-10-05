@@ -61,6 +61,10 @@ async def _send_fcm(env, token: str, title: str, body: str, url: str = None):
             body=json.dumps(data),
         )
         result = await response.json()
+
+        if hasattr(result, 'to_py'):
+
+            result = result.to_py()
         log_event("fcm_sent", {"success": result.get("success", 0)})
     except Exception as e:
         log_error(f"FCM send failed: {str(e)}")

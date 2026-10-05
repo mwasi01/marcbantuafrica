@@ -36,6 +36,10 @@ async def daily_weather(env):
             response = await fetch(api_url)
             if response.status == 200:
                 data = await response.json()
+
+                if hasattr(data, 'to_py'):
+
+                    data = data.to_py()
                 import json
                 await env.CACHE.put(key, json.dumps(data), expirationTtl=3600 * 6)
         except Exception as e:
@@ -55,6 +59,8 @@ async def daily_prices(env):
         # Example: fetch from AMIS Kenya
         # response = await fetch("https://amis.co.ke/api/prices")
         # prices = await response.json()
+ if hasattr(prices, 'to_py'):
+     prices = prices.to_py()
         # for price in prices:
         #     await db.insert('market_prices', {...})
         pass

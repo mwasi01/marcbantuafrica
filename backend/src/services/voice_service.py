@@ -43,6 +43,10 @@ class VoiceService:
                 body=f"username={self.username}&to={to}&from={from_number}",
             )
             data = await response.json()
+
+            if hasattr(data, 'to_py'):
+
+                data = data.to_py()
             return {"success": response.status < 300, "raw": data}
         except Exception as e:
             log_event("voice_call_failed", {"error": str(e), "to": to})
