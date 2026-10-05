@@ -160,8 +160,12 @@
 
         const farms = state.farms;
         if (!farms.length) {
-            Toast.warning('Please create a farm first');
-            window.location.href = 'planning.html';
+            Toast.info('Create a farm first');
+            if (window.Farm) {
+                window.Farm.openCreateModal(() => loadFarms());
+            } else {
+                window.location.href = 'planning.html';
+            }
             return;
         }
 

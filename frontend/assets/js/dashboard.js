@@ -30,6 +30,14 @@
         }
 
         const data = result.data;
+
+        // If the farmer has no farms, show a prominent setup CTA
+        if (data.needs_setup) {
+            renderGreeting(data.farmer);
+            renderNeedsSetup(data);
+            return;
+        }
+
         renderGreeting(data.farmer);
         renderKPIs(data);
         renderRecentRecords(data.recent_records);
@@ -47,6 +55,30 @@
             const name = (farmer.full_name || 'farmer').split(' ')[0];
             el.textContent = `${greeting}, ${name} 👋`;
         });
+    }
+
+    function renderNeedsSetup(data) {
+        const container = $('#kpi-container');
+        if (!container) return;
+        container.innerHTML = `
+            <div class="kpi" style="grid-column:1/-1; background:linear-gradient(135deg,#2f5d3a,#1a3c2e); color:#fff; padding:2rem; border-radius:20px; border:2px solid #d4a017;">
+                <div style="font-size:1.3rem; font-weight:800; margin-bottom:.5rem;">
+                    <i class="fas fa-seedling" style="color:#e6b422;"></i> Welcome to Marcbantu!
+                </div>
+                <p style="color:#c8d6ca; margin:0 0 1.2rem; font-size:.95rem;">
+                    You don't have any farms yet. Create your first farm to unlock records, planning, finance, weather, and the rest of your dashboard.
+                </p>
+                <button class="btn-primary" id="create-first-farm" style="font-size:1rem;">
+                    <i class="fas fa-plus-circle"></i> Create Your First Farm
+                </button>
+            </div>
+        `;
+        const btn = document.getElementById('create-first-farm');
+        if (btn) {
+            btn.addEventListener('click', () => {
+                window.Farm.openCreateModal(() => loadDashboard());
+            });
+        }
     }
 
     function renderKPIs(data) {

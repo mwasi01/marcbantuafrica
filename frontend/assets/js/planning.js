@@ -31,7 +31,37 @@
                 loadBudgets(),
                 loadCashFlow(),
             ]);
+        } else {
+            renderNoFarmsPanel();
         }
+    }
+
+    function renderNoFarmsPanel() {
+        const container = $('#enterprises-list');
+        if (container) {
+            container.innerHTML = `
+                <div style="text-align:center; padding:40px 20px; background:#fbfcf9; border:2px dashed #d4a017; border-radius:16px;">
+                    <i class="fas fa-seedling" style="font-size:3rem; color:#d4a017;"></i>
+                    <h3 style="color:#1a3c2e; margin:1rem 0 .5rem;">No farms yet</h3>
+                    <p style="color:#4a5a4a; margin:0 0 1.2rem; font-size:.95rem;">
+                        Create your first farm to start planning enterprises, budgets, and cash flow.
+                    </p>
+                    <button class="btn-primary" id="create-farm-planning">
+                        <i class="fas fa-plus-circle"></i> Create Farm
+                    </button>
+                </div>
+            `;
+            const btn = document.getElementById('create-farm-planning');
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    window.Farm.openCreateModal(() => loadFarms());
+                });
+            }
+        }
+        const budg = $('#budgets-list');
+        if (budg) budg.innerHTML = '<div style="text-align:center; padding:20px; color:#8a9c8c;">Create a farm first.</div>';
+        const cf = $('#cash-flow');
+        if (cf) cf.innerHTML = '<div style="text-align:center; padding:20px; color:#8a9c8c;">Create a farm first.</div>';
     }
 
     function renderFarmSelector() {
