@@ -7,12 +7,14 @@
  */
 
 const API_BASE = (() => {
-    // Auto-detect environment
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        return 'http://localhost:8787';
+    const meta = document.querySelector('meta[name="api-base"]');
+    if (meta && meta.content) return meta.content.replace(/\/$/, '');
+    if (typeof window.__MARCBANTU_API_BASE__ === 'string') {
+        return window.__MARCBANTU_API_BASE__.replace(/\/$/, '');
     }
-    // Production Worker URL (workers.dev subdomain)
-    // Will switch to https://api.marcbantuafrica.com once custom domain is live
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') return 'http://localhost:8787';
+    if (host.endsWith('marcbantuafrica.com')) return 'https://api.marcbantuafrica.com';
     return 'https://marcbantu-api.josuit-mwasi.workers.dev';
 })();
 

@@ -6,6 +6,13 @@
     'use strict';
     if (!window.Auth?.requireLogin()) return;
 
+
+    // === Marcbantu UI guard ===
+    if (!window.UI) {
+        console.error('[finance.js] window.UI missing — app.js failed to load.');
+        return;
+    }
+    // === end guard ===
     const { $, $$, Fmt, Toast, Modal } = window.UI;
 
     let state = {

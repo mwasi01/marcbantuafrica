@@ -127,12 +127,13 @@
 
         show(message, type = 'info', duration = 4000) {
             const container = this.ensureContainer();
-            const colors = {
+            const palettes = {
                 success: { bg: '#e8f0e1', border: '#2e7d32', icon: 'fa-check-circle', color: '#2e7d32' },
                 error: { bg: '#fde8e8', border: '#c0392b', icon: 'fa-exclamation-circle', color: '#c0392b' },
                 warning: { bg: '#fef3d0', border: '#d4a017', icon: 'fa-exclamation-triangle', color: '#8a6914' },
                 info: { bg: '#e3f2fd', border: '#1565c0', icon: 'fa-info-circle', color: '#1565c0' },
-            }[type] || colors.info;
+            };
+            const colors = palettes[type] || palettes.info;
 
             const toast = document.createElement('div');
             toast.style.cssText = `

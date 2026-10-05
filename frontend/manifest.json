@@ -1,8 +1,8 @@
 {
-    "name": "Marcbantu Africa — Smart Farm Management",
+    "name": "Marcbantu Africa \u2014 Smart Farm Management",
     "short_name": "Marcbantu",
     "description": "Farm management tools for African farmers. Records, finance, planning, weather, market prices.",
-    "start_url": "/dashboard.html",
+    "start_url": "/?source=pwa",
     "scope": "/",
     "display": "standalone",
     "orientation": "portrait",
