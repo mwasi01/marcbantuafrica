@@ -179,11 +179,12 @@
     // ============================================================
     const Modal = {
         open(contentOrId) {
-            const id = typeof contentOrId === 'string' ? contentOrId : null;
             let modal;
+            const isHtmlString = typeof contentOrId === 'string'
+                && contentOrId.trim().startsWith('<');
 
-            if (id) {
-                modal = document.getElementById(id);
+            if (!isHtmlString && typeof contentOrId === 'string') {
+                modal = document.getElementById(contentOrId);
                 if (!modal) return;
                 modal.classList.add('open');
             } else {
@@ -198,12 +199,10 @@
                 document.body.appendChild(modal);
             }
 
-            // Close on backdrop click
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) Modal.close(modal);
             });
 
-            // Close on ESC
             const handler = (e) => {
                 if (e.key === 'Escape') {
                     Modal.close(modal);
@@ -214,6 +213,7 @@
 
             return modal;
         },
+
 
         close(modal) {
             if (!modal) return;
