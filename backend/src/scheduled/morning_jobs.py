@@ -3,6 +3,8 @@ Marcbantu Africa — Morning scheduled jobs.
 Daily 6am: weather + prices
 Daily 7am: SMS reminders
 """
+
+from js import fetch
 from utils import log_event, log_error
 from db import DB
 

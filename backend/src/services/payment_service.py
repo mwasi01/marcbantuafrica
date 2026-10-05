@@ -2,6 +2,8 @@
 Marcbantu Africa — Payment Service.
 M-Pesa STK Push, C2B, and payment status.
 """
+
+from js import fetch
 import base64
 import json
 from datetime import datetime

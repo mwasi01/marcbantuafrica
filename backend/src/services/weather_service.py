@@ -2,6 +2,8 @@
 Marcbantu Africa — Weather Service.
 Open-Meteo integration (free, no API key), caching, agronomic advice.
 """
+
+from js import fetch
 import json
 from utils import now_iso, log_event
 

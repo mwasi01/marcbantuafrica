@@ -4,7 +4,7 @@ SMS, USSD, WhatsApp, Voice via Africa's Talking.
 Inbound webhooks + outbound sending.
 """
 
-from js import Response, Object
+from js import Response, Object, fetch
 from utils import (
     success_response, error_response, parse_json, require_auth,
     now_iso, to_int, to_float, log_event, require_fields,

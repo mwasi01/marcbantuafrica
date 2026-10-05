@@ -2,6 +2,8 @@
 Marcbantu Africa — Email Service.
 Uses MailChannels (free for Cloudflare Workers) or Resend.
 """
+
+from js import fetch
 import json
 from utils import now_iso, log_event, js_headers
 

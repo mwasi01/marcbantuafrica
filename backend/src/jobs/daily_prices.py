@@ -8,6 +8,8 @@ Sources (in priority order):
 2. KAMIS — Kenya Agricultural Market Information System
 3. Manual entries (already in DB)
 """
+
+from js import fetch
 from utils import now_iso, log_event, log_error
 from db import DB
 

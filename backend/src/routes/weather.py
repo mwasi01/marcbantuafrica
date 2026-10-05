@@ -3,6 +3,8 @@ Marcbantu Africa — Weather routes.
 Uses Open-Meteo (free, no API key) for forecasts and historical data.
 Caches results in KV to reduce external calls.
 """
+
+from js import fetch
 import json
 from utils import (
     success_response, error_response, require_auth,

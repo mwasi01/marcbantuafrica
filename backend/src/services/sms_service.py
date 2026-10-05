@@ -2,6 +2,8 @@
 Marcbantu Africa — SMS Service.
 Africa's Talking integration with templates, bulk, delivery tracking.
 """
+
+from js import fetch
 import json
 from utils import now_iso, log_event, generate_reference, js_headers
 

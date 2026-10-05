@@ -2,6 +2,8 @@
 Marcbantu Africa — WhatsApp Service.
 Meta WhatsApp Cloud API integration.
 """
+
+from js import fetch
 import json
 from utils import now_iso, log_event, generate_reference
 

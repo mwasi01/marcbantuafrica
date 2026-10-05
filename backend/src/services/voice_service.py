@@ -2,6 +2,8 @@
 Marcbantu Africa — Voice Service.
 Africa's Talking Voice API for outbound calls and IVR.
 """
+
+from js import fetch
 import json
 from utils import now_iso, log_event, js_headers
 

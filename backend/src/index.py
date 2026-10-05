@@ -2,6 +2,8 @@
 Marcbantu Africa — Main API Router.
 Entry point for Cloudflare Workers (Python).
 """
+
+from js import fetch
 import re
 from utils import json_response, error_response, log_event, log_error, now_iso
 from constants import HTTP, ErrorCode

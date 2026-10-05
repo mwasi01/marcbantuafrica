@@ -3,6 +3,8 @@ Job: send_push
 Payload: {token, platform, title, body, url?}
 Sends web push (VAPID) or FCM depending on platform.
 """
+
+from js import fetch
 import json
 from utils import log_event, log_error
 
