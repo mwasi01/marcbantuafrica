@@ -76,10 +76,12 @@ def validate_farm(data: dict) -> dict:
 
     return {
         'name': str(data['name']).strip(),
-        'size_acres': to_float(data.get('size_acres')) or None,
-        'latitude': to_float(data.get('latitude')) or None,
-        'longitude': to_float(data.get('longitude')) or None,
-        'altitude_m': to_float(data.get('altitude_m')) or None,
+        'county': data.get('county'),
+        'location': data.get('location'),
+        'size_acres': to_float(data.get('size_acres')),
+        'latitude': to_float(data.get('latitude')),
+        'longitude': to_float(data.get('longitude')),
+        'altitude_m': to_float(data.get('altitude_m')),
         'soil_type': data.get('soil_type'),
         'irrigation_type': data.get('irrigation_type'),
         'water_source': data.get('water_source'),

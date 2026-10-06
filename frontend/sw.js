@@ -1,9 +1,9 @@
 /**
- * Marcbantu Africa — Service Worker (v2).
+ * Marcbantu Africa — Service Worker (v4).
  * At /sw.js so scope covers whole origin.
  */
-const CACHE_NAME     = 'marcbantu-v3';
-const API_CACHE_NAME = 'marcbantu-api-v3';
+const CACHE_NAME     = 'marcbantu-v4';
+const API_CACHE_NAME = 'marcbantu-api-v4';
 
 const STATIC_ASSETS = [
     '/', '/index.html', '/about.html', '/contact.html', '/partners.html',
@@ -69,11 +69,25 @@ self.addEventListener('fetch', (event) => {
 });
 
 async function staleWhileRevalidate(request, cacheName) {
-    const cache  = await caches.open(cacheName);
+    const cache = await caches.open(cacheName);
     const cached = await cache.match(request);
+
     const net = fetch(request)
-        .then((res) => { if (res && res.ok) cache.put(request, res.clone()); return res; })
-        .catch(() => null);
+        .then((res) => {
+            if (res && res.ok) {
+                cache.put(request, res.clone());
+            }
+            return res;
+        })
+        .catch((err) => {
+            // Don't log navigation fetches that fail — they're expected
+            // for /dashboard style URLs that don't have a matching file.
+            if (request.mode !== 'navigate') {
+                console.warn('[SW] fetch failed:', request.url, err.message);
+            }
+            return null;
+        });
+
     return cached || (await net) || offlineResponse(request);
 }
 

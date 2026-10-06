@@ -61,9 +61,20 @@ class DB:
     # CRUD SHORTCUTS
     # ========================================================
     async def insert(self, table: str, data: dict) -> int | None:
-        """Insert a row and return the new ID."""
-        keys = list(data.keys())
-        values = list(data.values())
+        """Insert a row and return the new ID.
+
+        Filters out keys whose value is None so that D1 can use the column
+        default (or NULL) instead of erroring on 'undefined'. D1 does not
+        accept JS undefined values — Python None becomes undefined when
+        crossing the Pyodide bridge.
+        """
+        # Drop None values (D1 rejects undefined; SQL defaults handle rest)
+        clean = {k: v for k, v in data.items() if v is not None}
+        if not clean:
+            raise ValueError(f"insert({table}) called with no non-None values")
+
+        keys = list(clean.keys())
+        values = list(clean.values())
         placeholders = ", ".join(["?"] * len(keys))
         columns = ", ".join(keys)
         sql = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"
@@ -73,11 +84,17 @@ class DB:
         return None
 
     async def update(self, table: str, data: dict, where: str, params: list):
-        """Update rows matching `where`."""
-        if not data:
+        """Update rows matching `where`.
+
+        Like insert(), this filters None values to avoid D1 undefined errors.
+        If callers genuinely want to NULL a column, they should pass an
+        explicit empty string or use a dedicated null-out helper.
+        """
+        clean = {k: v for k, v in data.items() if v is not None}
+        if not clean:
             return None
-        sets = ", ".join([f"{k} = ?" for k in data.keys()])
-        values = list(data.values()) + list(params)
+        sets = ", ".join([f"{k} = ?" for k in clean.keys()])
+        values = list(clean.values()) + list(params)
         sql = f"UPDATE {table} SET {sets} WHERE {where}"
         return await self.execute(sql, values)
 
