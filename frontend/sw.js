@@ -2,8 +2,8 @@
  * Marcbantu Africa — Service Worker (v2).
  * At /sw.js so scope covers whole origin.
  */
-const CACHE_NAME     = 'marcbantu-v2';
-const API_CACHE_NAME = 'marcbantu-api-v2';
+const CACHE_NAME     = 'marcbantu-v3';
+const API_CACHE_NAME = 'marcbantu-api-v3';
 
 const STATIC_ASSETS = [
     '/', '/index.html', '/about.html', '/contact.html', '/partners.html',
