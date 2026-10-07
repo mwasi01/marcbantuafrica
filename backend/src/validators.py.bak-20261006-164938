@@ -76,12 +76,10 @@ def validate_farm(data: dict) -> dict:
 
     return {
         'name': str(data['name']).strip(),
-        'county': data.get('county'),
-        'location': data.get('location'),
-        'size_acres': to_float(data.get('size_acres')),
-        'latitude': to_float(data.get('latitude')),
-        'longitude': to_float(data.get('longitude')),
-        'altitude_m': to_float(data.get('altitude_m')),
+        'size_acres': to_float(data.get('size_acres')) or None,
+        'latitude': to_float(data.get('latitude')) or None,
+        'longitude': to_float(data.get('longitude')) or None,
+        'altitude_m': to_float(data.get('altitude_m')) or None,
         'soil_type': data.get('soil_type'),
         'irrigation_type': data.get('irrigation_type'),
         'water_source': data.get('water_source'),
@@ -128,7 +126,7 @@ def validate_record(data: dict) -> dict:
 
     return {
         'farm_id': to_int(data['farm_id']),
-        'enterprise_id': to_int(data.get('enterprise_id')) or None,
+        'enterprise_id': to_int(data['enterprise_id']) or None,
         'record_type': data['record_type'],
         'activity': data.get('activity'),
         'description': data.get('description'),
@@ -139,7 +137,6 @@ def validate_record(data: dict) -> dict:
         'record_date': data['record_date'],
         'notes': data.get('notes'),
         'photo_url': data.get('photo_url'),
-        'plot_id': to_int(data.get('plot_id')) or None,
         'latitude': to_float(data.get('latitude')) or None,
         'longitude': to_float(data.get('longitude')) or None,
     }

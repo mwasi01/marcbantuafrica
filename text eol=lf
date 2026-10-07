@@ -1,0 +1,1011 @@
+[1mdiff --git a/backend/src/db.py b/backend/src/db.py[m
+[1mindex 3da5d53..dec65d0 100644[m
+[1m--- a/backend/src/db.py[m
+[1m+++ b/backend/src/db.py[m
+[36m@@ -61,9 +61,20 @@[m [mclass DB:[m
+     # CRUD SHORTCUTS[m
+     # ========================================================[m
+     async def insert(self, table: str, data: dict) -> int | None:[m
+[31m-        """Insert a row and return the new ID."""[m
+[31m-        keys = list(data.keys())[m
+[31m-        values = list(data.values())[m
+[32m+[m[32m        """Insert a row and return the new ID.[m
+[32m+[m
+[32m+[m[32m        Filters out keys whose value is None so that D1 can use the column[m
+[32m+[m[32m        default (or NULL) instead of erroring on 'undefined'. D1 does not[m
+[32m+[m[32m        accept JS undefined values — Python None becomes undefined when[m
+[32m+[m[32m        crossing the Pyodide bridge.[m
+[32m+[m[32m        """[m
+[32m+[m[32m        # Drop None values (D1 rejects undefined; SQL defaults handle rest)[m
+[32m+[m[32m        clean = {k: v for k, v in data.items() if v is not None}[m
+[32m+[m[32m        if not clean:[m
+[32m+[m[32m            raise ValueError(f"insert({table}) called with no non-None values")[m
+[32m+[m
+[32m+[m[32m        keys = list(clean.keys())[m
+[32m+[m[32m        values = list(clean.values())[m
+         placeholders = ", ".join(["?"] * len(keys))[m
+         columns = ", ".join(keys)[m
+         sql = f"INSERT INTO {table} ({columns}) VALUES ({placeholders})"[m
+[36m@@ -73,11 +84,17 @@[m [mclass DB:[m
+         return None[m
+ [m
+     async def update(self, table: str, data: dict, where: str, params: list):[m
+[31m-        """Update rows matching `where`."""[m
+[31m-        if not data:[m
+[32m+[m[32m        """Update rows matching `where`.[m
+[32m+[m
+[32m+[m[32m        Like insert(), this filters None values to avoid D1 undefined errors.[m
+[32m+[m[32m        If callers genuinely want to NULL a column, they should pass an[m
+[32m+[m[32m        explicit empty string or use a dedicated null-out helper.[m
+[32m+[m[32m        """[m
+[32m+[m[32m        clean = {k: v for k, v in data.items() if v is not None}[m
+[32m+[m[32m        if not clean:[m
+             return None[m
+[31m-        sets = ", ".join([f"{k} = ?" for k in data.keys()])[m
+[31m-        values = list(data.values()) + list(params)[m
+[32m+[m[32m        sets = ", ".join([f"{k} = ?" for k in clean.keys()])[m
+[32m+[m[32m        values = list(clean.values()) + list(params)[m
+         sql = f"UPDATE {table} SET {sets} WHERE {where}"[m
+         return await self.execute(sql, values)[m
+ [m
+[1mdiff --git a/backend/src/validators.py b/backend/src/validators.py[m
+[1mindex 99c9bcc..3abcd38 100644[m
+[1m--- a/backend/src/validators.py[m
+[1m+++ b/backend/src/validators.py[m
+[36m@@ -1,477 +1,479 @@[m
+[31m-"""[m
+[31m-Marcbantu Africa — Validators.[m
+[31m-Per-resource input validation with clear error messages.[m
+[31m-"""[m
+[31m-from constants import ([m
+[31m-    Tier, EnterpriseType, RecordType, TransactionType,[m
+[31m-    PaymentMethod, Priority, TaskStatus, PaymentStatus,[m
+[31m-    Severity, Channel, NotificationType,[m
+[31m-    INCOME_CATEGORIES, EXPENSE_CATEGORIES,[m
+[31m-)[m
+[31m-from utils import ([m
+[31m-    is_valid_phone, is_valid_email, validate_phone,[m
+[31m-    to_int, to_float, require_fields, validate_enum,[m
+[31m-)[m
+[31m-[m
+[31m-[m
+[31m-class ValidationError(Exception):[m
+[31m-    """Raised when validation fails."""[m
+[31m-    def __init__(self, message, field=None):[m
+[31m-        super().__init__(message)[m
+[31m-        self.message = message[m
+[31m-        self.field = field[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# AUTH[m
+[31m-# ============================================================[m
+[31m-def validate_register(data: dict) -> dict:[m
+[31m-    """Validate registration input. Returns cleaned data."""[m
+[31m-    err = require_fields(data, ['phone', 'full_name', 'password'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    phone = validate_phone(data['phone'])[m
+[31m-    if not is_valid_phone(phone):[m
+[31m-        raise ValidationError("Invalid phone number", field='phone')[m
+[31m-[m
+[31m-    if len(data['password']) < 6:[m
+[31m-        raise ValidationError("Password must be at least 6 characters", field='password')[m
+[31m-[m
+[31m-    if len(data['full_name'].strip()) < 2:[m
+[31m-        raise ValidationError("Full name is too short", field='full_name')[m
+[31m-[m
+[31m-    email = data.get('email', '').strip().lower() if data.get('email') else None[m
+[31m-    if email and not is_valid_email(email):[m
+[31m-        raise ValidationError("Invalid email address", field='email')[m
+[31m-[m
+[31m-    return {[m
+[31m-        'phone': phone,[m
+[31m-        'email': email,[m
+[31m-        'full_name': data['full_name'].strip(),[m
+[31m-        'password': data['password'],[m
+[31m-        'county': data.get('county'),[m
+[31m-        'location': data.get('location'),[m
+[31m-        'language': data.get('language', 'en'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-def validate_login(data: dict) -> dict:[m
+[31m-    """Validate login input."""[m
+[31m-    err = require_fields(data, ['phone', 'password'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    phone = validate_phone(data['phone'])[m
+[31m-    return {'phone': phone, 'password': data['password']}[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# FARM[m
+[31m-# ============================================================[m
+[31m-def validate_farm(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['name'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    return {[m
+[31m-        'name': str(data['name']).strip(),[m
+[31m-        'size_acres': to_float(data.get('size_acres')) or None,[m
+[31m-        'latitude': to_float(data.get('latitude')) or None,[m
+[31m-        'longitude': to_float(data.get('longitude')) or None,[m
+[31m-        'altitude_m': to_float(data.get('altitude_m')) or None,[m
+[31m-        'soil_type': data.get('soil_type'),[m
+[31m-        'irrigation_type': data.get('irrigation_type'),[m
+[31m-        'water_source': data.get('water_source'),[m
+[31m-        'notes': data.get('notes'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# ENTERPRISE[m
+[31m-# ============================================================[m
+[31m-def validate_enterprise(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['name', 'type'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    err = validate_enum(data['type'], EnterpriseType.ALL, 'type')[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err, field='type')[m
+[31m-[m
+[31m-    return {[m
+[31m-        'name': str(data['name']).strip(),[m
+[31m-        'type': data['type'],[m
+[31m-        'species_or_crop': data.get('species_or_crop'),[m
+[31m-        'quantity': to_float(data.get('quantity')) or None,[m
+[31m-        'unit': data.get('unit'),[m
+[31m-        'start_date': data.get('start_date'),[m
+[31m-        'expected_end_date': data.get('expected_end_date'),[m
+[31m-        'status': data.get('status', 'active'),[m
+[31m-        'notes': data.get('notes'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# RECORD[m
+[31m-# ============================================================[m
+[31m-def validate_record(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['farm_id', 'record_type', 'record_date'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    err = validate_enum(data['record_type'], RecordType.ALL, 'record_type')[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err, field='record_type')[m
+[31m-[m
+[31m-    return {[m
+[31m-        'farm_id': to_int(data['farm_id']),[m
+[31m-        'enterprise_id': to_int(data['enterprise_id']) or None,[m
+[31m-        'record_type': data['record_type'],[m
+[31m-        'activity': data.get('activity'),[m
+[31m-        'description': data.get('description'),[m
+[31m-        'quantity': to_float(data.get('quantity')) or None,[m
+[31m-        'unit': data.get('unit'),[m
+[31m-        'cost': to_float(data.get('cost')),[m
+[31m-        'revenue': to_float(data.get('revenue')),[m
+[31m-        'record_date': data['record_date'],[m
+[31m-        'notes': data.get('notes'),[m
+[31m-        'photo_url': data.get('photo_url'),[m
+[31m-        'latitude': to_float(data.get('latitude')) or None,[m
+[31m-        'longitude': to_float(data.get('longitude')) or None,[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# TRANSACTION[m
+[31m-# ============================================================[m
+[31m-def validate_transaction(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['farm_id', 'type', 'category', 'amount', 'transaction_date'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    err = validate_enum(data['type'], TransactionType.ALL, 'type')[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err, field='type')[m
+[31m-[m
+[31m-    # Validate category matches type[m
+[31m-    if data['type'] == TransactionType.INCOME:[m
+[31m-        valid_cats = INCOME_CATEGORIES + [c for c in EXPENSE_CATEGORIES]  # allow any[m
+[31m-    else:[m
+[31m-        valid_cats = EXPENSE_CATEGORIES + [c for c in INCOME_CATEGORIES][m
+[31m-[m
+[31m-    amount = to_float(data['amount'])[m
+[31m-    if amount <= 0:[m
+[31m-        raise ValidationError("Amount must be greater than zero", field='amount')[m
+[31m-[m
+[31m-    payment_method = data.get('payment_method')[m
+[31m-    if payment_method:[m
+[31m-        err = validate_enum(payment_method, PaymentMethod.ALL, 'payment_method')[m
+[31m-        if err:[m
+[31m-            raise ValidationError(err, field='payment_method')[m
+[31m-[m
+[31m-    return {[m
+[31m-        'farm_id': to_int(data['farm_id']),[m
+[31m-        'enterprise_id': to_int(data.get('enterprise_id')) or None,[m
+[31m-        'type': data['type'],[m
+[31m-        'category': data['category'],[m
+[31m-        'description': data.get('description'),[m
+[31m-        'amount': amount,[m
+[31m-        'payment_method': payment_method,[m
+[31m-        'reference': data.get('reference'),[m
+[31m-        'transaction_date': data['transaction_date'],[m
+[31m-        'notes': data.get('notes'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# SALE[m
+[31m-# ============================================================[m
+[31m-def validate_sale(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['farm_id', 'product', 'quantity', 'unit_price', 'sale_date'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    quantity = to_float(data['quantity'])[m
+[31m-    unit_price = to_float(data['unit_price'])[m
+[31m-    if quantity <= 0:[m
+[31m-        raise ValidationError("Quantity must be > 0", field='quantity')[m
+[31m-    if unit_price < 0:[m
+[31m-        raise ValidationError("Unit price cannot be negative", field='unit_price')[m
+[31m-[m
+[31m-    payment_status = data.get('payment_status', PaymentStatus.PENDING)[m
+[31m-    err = validate_enum(payment_status, PaymentStatus.ALL, 'payment_status')[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err, field='payment_status')[m
+[31m-[m
+[31m-    return {[m
+[31m-        'farm_id': to_int(data['farm_id']),[m
+[31m-        'buyer_id': to_int(data.get('buyer_id')) or None,[m
+[31m-        'enterprise_id': to_int(data.get('enterprise_id')) or None,[m
+[31m-        'product': data['product'],[m
+[31m-        'quantity': quantity,[m
+[31m-        'unit': data.get('unit', 'kg'),[m
+[31m-        'unit_price': unit_price,[m
+[31m-        'total': quantity * unit_price,[m
+[31m-        'payment_status': payment_status,[m
+[31m-        'payment_method': data.get('payment_method'),[m
+[31m-        'amount_paid': to_float(data.get('amount_paid', 0)),[m
+[31m-        'sale_date': data['sale_date'],[m
+[31m-        'notes': data.get('notes'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# TASK[m
+[31m-# ============================================================[m
+[31m-def validate_task(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['farm_id', 'title'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    priority = data.get('priority', Priority.MEDIUM)[m
+[31m-    err = validate_enum(priority, Priority.ALL, 'priority')[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err, field='priority')[m
+[31m-[m
+[31m-    status = data.get('status', TaskStatus.PENDING)[m
+[31m-    err = validate_enum(status, TaskStatus.ALL, 'status')[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err, field='status')[m
+[31m-[m
+[31m-    return {[m
+[31m-        'farm_id': to_int(data['farm_id']),[m
+[31m-        'enterprise_id': to_int(data.get('enterprise_id')) or None,[m
+[31m-        'plot_id': to_int(data.get('plot_id')) or None,[m
+[31m-        'assigned_to': to_int(data.get('assigned_to')) or None,[m
+[31m-        'title': str(data['title']).strip(),[m
+[31m-        'description': data.get('description'),[m
+[31m-        'priority': priority,[m
+[31m-        'status': status,[m
+[31m-        'due_date': data.get('due_date'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# WORKER[m
+[31m-# ============================================================[m
+[31m-def validate_worker(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['farm_id', 'name'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    return {[m
+[31m-        'farm_id': to_int(data['farm_id']),[m
+[31m-        'name': str(data['name']).strip(),[m
+[31m-        'phone': validate_phone(data['phone']) if data.get('phone') else None,[m
+[31m-        'role': data.get('role'),[m
+[31m-        'wage_type': data.get('wage_type', 'monthly'),[m
+[31m-        'wage_amount': to_float(data.get('wage_amount')) or None,[m
+[31m-        'start_date': data.get('start_date'),[m
+[31m-        'notes': data.get('notes'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# ATTENDANCE[m
+[31m-# ============================================================[m
+[31m-def validate_attendance(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['worker_id', 'farm_id', 'date'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    status = data.get('status', 'present')[m
+[31m-    err = validate_enum(status, ['present', 'absent', 'half-day', 'leave', 'holiday'], 'status')[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err, field='status')[m
+[31m-[m
+[31m-    return {[m
+[31m-        'worker_id': to_int(data['worker_id']),[m
+[31m-        'farm_id': to_int(data['farm_id']),[m
+[31m-        'date': data['date'],[m
+[31m-        'status': status,[m
+[31m-        'hours': to_float(data.get('hours')) or None,[m
+[31m-        'task_id': to_int(data.get('task_id')) or None,[m
+[31m-        'notes': data.get('notes'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# EQUIPMENT[m
+[31m-# ============================================================[m
+[31m-def validate_equipment(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['farm_id', 'name'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    return {[m
+[31m-        'farm_id': to_int(data['farm_id']),[m
+[31m-        'name': str(data['name']).strip(),[m
+[31m-        'type': data.get('type'),[m
+[31m-        'make': data.get('make'),[m
+[31m-        'model': data.get('model'),[m
+[31m-        'serial_number': data.get('serial_number'),[m
+[31m-        'purchase_date': data.get('purchase_date'),[m
+[31m-        'purchase_cost': to_float(data.get('purchase_cost')) or None,[m
+[31m-        'current_value': to_float(data.get('current_value')) or None,[m
+[31m-        'last_service_date': data.get('last_service_date'),[m
+[31m-        'next_service_date': data.get('next_service_date'),[m
+[31m-        'status': data.get('status', 'good'),[m
+[31m-        'notes': data.get('notes'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# PEST SCOUTING[m
+[31m-# ============================================================[m
+[31m-def validate_scouting(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['farm_id', 'pest_name', 'scout_date'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    severity = data.get('severity', Severity.LOW)[m
+[31m-    err = validate_enum(severity, Severity.ALL, 'severity')[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err, field='severity')[m
+[31m-[m
+[31m-    return {[m
+[31m-        'farm_id': to_int(data['farm_id']),[m
+[31m-        'plot_id': to_int(data.get('plot_id')) or None,[m
+[31m-        'enterprise_id': to_int(data.get('enterprise_id')) or None,[m
+[31m-        'pest_name': data['pest_name'],[m
+[31m-        'pest_type': data.get('pest_type'),[m
+[31m-        'severity': severity,[m
+[31m-        'affected_area_pct': to_float(data.get('affected_area_pct')) or None,[m
+[31m-        'photo_url': data.get('photo_url'),[m
+[31m-        'symptoms': data.get('symptoms'),[m
+[31m-        'scout_date': data['scout_date'],[m
+[31m-        'notes': data.get('notes'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# TREATMENT[m
+[31m-# ============================================================[m
+[31m-def validate_treatment(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['farm_id', 'product', 'application_date'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    return {[m
+[31m-        'farm_id': to_int(data['farm_id']),[m
+[31m-        'plot_id': to_int(data.get('plot_id')) or None,[m
+[31m-        'enterprise_id': to_int(data.get('enterprise_id')) or None,[m
+[31m-        'product': data['product'],[m
+[31m-        'active_ingredient': data.get('active_ingredient'),[m
+[31m-        'rate': data.get('rate'),[m
+[31m-        'target_pest': data.get('target_pest'),[m
+[31m-        'application_date': data['application_date'],[m
+[31m-        'notes': data.get('notes'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# MESSAGE[m
+[31m-# ============================================================[m
+[31m-def validate_message(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['recipient', 'body'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    channel = data.get('channel', Channel.SMS)[m
+[31m-    err = validate_enum(channel, Channel.ALL, 'channel')[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err, field='channel')[m
+[31m-[m
+[31m-    return {[m
+[31m-        'channel': channel,[m
+[31m-        'recipient': data['recipient'],[m
+[31m-        'body': data['body'],[m
+[31m-        'farmer_id': to_int(data.get('farmer_id')) or None,[m
+[31m-        'template_code': data.get('template_code'),[m
+[31m-        'scheduled_for': data.get('scheduled_for'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# NOTIFICATION[m
+[31m-# ============================================================[m
+[31m-def validate_notification(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['farmer_id', 'type', 'title', 'message'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    err = validate_enum(data['type'], NotificationType.ALL, 'type')[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err, field='type')[m
+[31m-[m
+[31m-    return {[m
+[31m-        'farmer_id': to_int(data['farmer_id']),[m
+[31m-        'type': data['type'],[m
+[31m-        'title': data['title'],[m
+[31m-        'message': data['message'],[m
+[31m-        'action_url': data.get('action_url'),[m
+[31m-        'priority': data.get('priority', 'normal'),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-# ============================================================[m
+[31m-# DECISION TOOLS[m
+[31m-# ============================================================[m
+[31m-def validate_breakeven(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['fixed_costs', 'variable_cost_per_unit', 'price_per_unit'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    fixed = to_float(data['fixed_costs'])[m
+[31m-    vc = to_float(data['variable_cost_per_unit'])[m
+[31m-    price = to_float(data['price_per_unit'])[m
+[31m-[m
+[31m-    if fixed < 0:[m
+[31m-        raise ValidationError("Fixed costs cannot be negative", field='fixed_costs')[m
+[31m-    if vc < 0:[m
+[31m-        raise ValidationError("Variable cost cannot be negative", field='variable_cost_per_unit')[m
+[31m-    if price <= vc:[m
+[31m-        raise ValidationError("Price must be greater than variable cost per unit", field='price_per_unit')[m
+[31m-[m
+[31m-    return {'fixed_costs': fixed, 'variable_cost_per_unit': vc, 'price_per_unit': price}[m
+[31m-[m
+[31m-[m
+[31m-def validate_gross_margin(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['revenue', 'variable_costs'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-    return {[m
+[31m-        'revenue': to_float(data['revenue']),[m
+[31m-        'variable_costs': to_float(data['variable_costs']),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-def validate_loan(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['loan_amount', 'annual_rate', 'term_months', 'monthly_profit'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-[m
+[31m-    term = to_int(data['term_months'])[m
+[31m-    if term <= 0:[m
+[31m-        raise ValidationError("Term must be positive", field='term_months')[m
+[31m-[m
+[31m-    return {[m
+[31m-        'loan_amount': to_float(data['loan_amount']),[m
+[31m-        'annual_rate': to_float(data['annual_rate']),[m
+[31m-        'term_months': term,[m
+[31m-        'monthly_profit': to_float(data['monthly_profit']),[m
+[31m-    }[m
+[31m-[m
+[31m-[m
+[31m-def validate_risk(data: dict) -> dict:[m
+[31m-    err = require_fields(data, ['scores'])[m
+[31m-    if err:[m
+[31m-        raise ValidationError(err)[m
+[31m-    if not isinstance(data['scores'], dict) or not data['scores']:[m
+[31m-        raise ValidationError("Scores must be a non-empty object", field='scores')[m
+[31m-    try:[m
+[31m-        scores = {k: float(v) for k, v in data['scores'].items()}[m
+[31m-    except (ValueError, TypeError):[m
+[31m-        raise ValidationError("All scores must be numeric", field='scores')[m
+[32m+[m[32m"""[m
+[32m+[m[32mMarcbantu Africa — Validators.[m
+[32m+[m[32mPer-resource input validation with clear error messages.[m
+[32m+[m[32m"""[m
+[32m+[m[32mfrom constants import ([m
+[32m+[m[32m    Tier, EnterpriseType, RecordType, TransactionType,[m
+[32m+[m[32m    PaymentMethod, Priority, TaskStatus, PaymentStatus,[m
+[32m+[m[32m    Severity, Channel, NotificationType,[m
+[32m+[m[32m    INCOME_CATEGORIES, EXPENSE_CATEGORIES,[m
+[32m+[m[32m)[m
+[32m+[m[32mfrom utils import ([m
+[32m+[m[32m    is_valid_phone, is_valid_email, validate_phone,[m
+[32m+[m[32m    to_int, to_float, require_fields, validate_enum,[m
+[32m+[m[32m)[m
+[32m+[m
+[32m+[m
+[32m+[m[32mclass ValidationError(Exception):[m
+[32m+[m[32m    """Raised when validation fails."""[m
+[32m+[m[32m    def __init__(self, message, field=None):[m
+[32m+[m[32m        super().__init__(message)[m
+[32m+[m[32m        self.message = message[m
+[32m+[m[32m        self.field = field[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# AUTH[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_register(data: dict) -> dict:[m
+[32m+[m[32m    """Validate registration input. Returns cleaned data."""[m
+[32m+[m[32m    err = require_fields(data, ['phone', 'full_name', 'password'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    phone = validate_phone(data['phone'])[m
+[32m+[m[32m    if not is_valid_phone(phone):[m
+[32m+[m[32m        raise ValidationError("Invalid phone number", field='phone')[m
+[32m+[m
+[32m+[m[32m    if len(data['password']) < 6:[m
+[32m+[m[32m        raise ValidationError("Password must be at least 6 characters", field='password')[m
+[32m+[m
+[32m+[m[32m    if len(data['full_name'].strip()) < 2:[m
+[32m+[m[32m        raise ValidationError("Full name is too short", field='full_name')[m
+[32m+[m
+[32m+[m[32m    email = data.get('email', '').strip().lower() if data.get('email') else None[m
+[32m+[m[32m    if email and not is_valid_email(email):[m
+[32m+[m[32m        raise ValidationError("Invalid email address", field='email')[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'phone': phone,[m
+[32m+[m[32m        'email': email,[m
+[32m+[m[32m        'full_name': data['full_name'].strip(),[m
+[32m+[m[32m        'password': data['password'],[m
+[32m+[m[32m        'county': data.get('county'),[m
+[32m+[m[32m        'location': data.get('location'),[m
+[32m+[m[32m        'language': data.get('language', 'en'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef validate_login(data: dict) -> dict:[m
+[32m+[m[32m    """Validate login input."""[m
+[32m+[m[32m    err = require_fields(data, ['phone', 'password'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    phone = validate_phone(data['phone'])[m
+[32m+[m[32m    return {'phone': phone, 'password': data['password']}[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# FARM[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_farm(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['name'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'name': str(data['name']).strip(),[m
+[32m+[m[32m        'county': data.get('county'),[m
+[32m+[m[32m        'location': data.get('location'),[m
+[32m+[m[32m        'size_acres': to_float(data.get('size_acres')),[m
+[32m+[m[32m        'latitude': to_float(data.get('latitude')),[m
+[32m+[m[32m        'longitude': to_float(data.get('longitude')),[m
+[32m+[m[32m        'altitude_m': to_float(data.get('altitude_m')),[m
+[32m+[m[32m        'soil_type': data.get('soil_type'),[m
+[32m+[m[32m        'irrigation_type': data.get('irrigation_type'),[m
+[32m+[m[32m        'water_source': data.get('water_source'),[m
+[32m+[m[32m        'notes': data.get('notes'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# ENTERPRISE[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_enterprise(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['name', 'type'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    err = validate_enum(data['type'], EnterpriseType.ALL, 'type')[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err, field='type')[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'name': str(data['name']).strip(),[m
+[32m+[m[32m        'type': data['type'],[m
+[32m+[m[32m        'species_or_crop': data.get('species_or_crop'),[m
+[32m+[m[32m        'quantity': to_float(data.get('quantity')) or None,[m
+[32m+[m[32m        'unit': data.get('unit'),[m
+[32m+[m[32m        'start_date': data.get('start_date'),[m
+[32m+[m[32m        'expected_end_date': data.get('expected_end_date'),[m
+[32m+[m[32m        'status': data.get('status', 'active'),[m
+[32m+[m[32m        'notes': data.get('notes'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# RECORD[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_record(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['farm_id', 'record_type', 'record_date'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    err = validate_enum(data['record_type'], RecordType.ALL, 'record_type')[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err, field='record_type')[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'farm_id': to_int(data['farm_id']),[m
+[32m+[m[32m        'enterprise_id': to_int(data['enterprise_id']) or None,[m
+[32m+[m[32m        'record_type': data['record_type'],[m
+[32m+[m[32m        'activity': data.get('activity'),[m
+[32m+[m[32m        'description': data.get('description'),[m
+[32m+[m[32m        'quantity': to_float(data.get('quantity')) or None,[m
+[32m+[m[32m        'unit': data.get('unit'),[m
+[32m+[m[32m        'cost': to_float(data.get('cost')),[m
+[32m+[m[32m        'revenue': to_float(data.get('revenue')),[m
+[32m+[m[32m        'record_date': data['record_date'],[m
+[32m+[m[32m        'notes': data.get('notes'),[m
+[32m+[m[32m        'photo_url': data.get('photo_url'),[m
+[32m+[m[32m        'latitude': to_float(data.get('latitude')) or None,[m
+[32m+[m[32m        'longitude': to_float(data.get('longitude')) or None,[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# TRANSACTION[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_transaction(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['farm_id', 'type', 'category', 'amount', 'transaction_date'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    err = validate_enum(data['type'], TransactionType.ALL, 'type')[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err, field='type')[m
+[32m+[m
+[32m+[m[32m    # Validate category matches type[m
+[32m+[m[32m    if data['type'] == TransactionType.INCOME:[m
+[32m+[m[32m        valid_cats = INCOME_CATEGORIES + [c for c in EXPENSE_CATEGORIES]  # allow any[m
+[32m+[m[32m    else:[m
+[32m+[m[32m        valid_cats = EXPENSE_CATEGORIES + [c for c in INCOME_CATEGORIES][m
+[32m+[m
+[32m+[m[32m    amount = to_float(data['amount'])[m
+[32m+[m[32m    if amount <= 0:[m
+[32m+[m[32m        raise ValidationError("Amount must be greater than zero", field='amount')[m
+[32m+[m
+[32m+[m[32m    payment_method = data.get('payment_method')[m
+[32m+[m[32m    if payment_method:[m
+[32m+[m[32m        err = validate_enum(payment_method, PaymentMethod.ALL, 'payment_method')[m
+[32m+[m[32m        if err:[m
+[32m+[m[32m            raise ValidationError(err, field='payment_method')[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'farm_id': to_int(data['farm_id']),[m
+[32m+[m[32m        'enterprise_id': to_int(data.get('enterprise_id')) or None,[m
+[32m+[m[32m        'type': data['type'],[m
+[32m+[m[32m        'category': data['category'],[m
+[32m+[m[32m        'description': data.get('description'),[m
+[32m+[m[32m        'amount': amount,[m
+[32m+[m[32m        'payment_method': payment_method,[m
+[32m+[m[32m        'reference': data.get('reference'),[m
+[32m+[m[32m        'transaction_date': data['transaction_date'],[m
+[32m+[m[32m        'notes': data.get('notes'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# SALE[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_sale(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['farm_id', 'product', 'quantity', 'unit_price', 'sale_date'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    quantity = to_float(data['quantity'])[m
+[32m+[m[32m    unit_price = to_float(data['unit_price'])[m
+[32m+[m[32m    if quantity <= 0:[m
+[32m+[m[32m        raise ValidationError("Quantity must be > 0", field='quantity')[m
+[32m+[m[32m    if unit_price < 0:[m
+[32m+[m[32m        raise ValidationError("Unit price cannot be negative", field='unit_price')[m
+[32m+[m
+[32m+[m[32m    payment_status = data.get('payment_status', PaymentStatus.PENDING)[m
+[32m+[m[32m    err = validate_enum(payment_status, PaymentStatus.ALL, 'payment_status')[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err, field='payment_status')[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'farm_id': to_int(data['farm_id']),[m
+[32m+[m[32m        'buyer_id': to_int(data.get('buyer_id')) or None,[m
+[32m+[m[32m        'enterprise_id': to_int(data.get('enterprise_id')) or None,[m
+[32m+[m[32m        'product': data['product'],[m
+[32m+[m[32m        'quantity': quantity,[m
+[32m+[m[32m        'unit': data.get('unit', 'kg'),[m
+[32m+[m[32m        'unit_price': unit_price,[m
+[32m+[m[32m        'total': quantity * unit_price,[m
+[32m+[m[32m        'payment_status': payment_status,[m
+[32m+[m[32m        'payment_method': data.get('payment_method'),[m
+[32m+[m[32m        'amount_paid': to_float(data.get('amount_paid', 0)),[m
+[32m+[m[32m        'sale_date': data['sale_date'],[m
+[32m+[m[32m        'notes': data.get('notes'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# TASK[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_task(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['farm_id', 'title'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    priority = data.get('priority', Priority.MEDIUM)[m
+[32m+[m[32m    err = validate_enum(priority, Priority.ALL, 'priority')[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err, field='priority')[m
+[32m+[m
+[32m+[m[32m    status = data.get('status', TaskStatus.PENDING)[m
+[32m+[m[32m    err = validate_enum(status, TaskStatus.ALL, 'status')[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err, field='status')[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'farm_id': to_int(data['farm_id']),[m
+[32m+[m[32m        'enterprise_id': to_int(data.get('enterprise_id')) or None,[m
+[32m+[m[32m        'plot_id': to_int(data.get('plot_id')) or None,[m
+[32m+[m[32m        'assigned_to': to_int(data.get('assigned_to')) or None,[m
+[32m+[m[32m        'title': str(data['title']).strip(),[m
+[32m+[m[32m        'description': data.get('description'),[m
+[32m+[m[32m        'priority': priority,[m
+[32m+[m[32m        'status': status,[m
+[32m+[m[32m        'due_date': data.get('due_date'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# WORKER[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_worker(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['farm_id', 'name'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'farm_id': to_int(data['farm_id']),[m
+[32m+[m[32m        'name': str(data['name']).strip(),[m
+[32m+[m[32m        'phone': validate_phone(data['phone']) if data.get('phone') else None,[m
+[32m+[m[32m        'role': data.get('role'),[m
+[32m+[m[32m        'wage_type': data.get('wage_type', 'monthly'),[m
+[32m+[m[32m        'wage_amount': to_float(data.get('wage_amount')) or None,[m
+[32m+[m[32m        'start_date': data.get('start_date'),[m
+[32m+[m[32m        'notes': data.get('notes'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# ATTENDANCE[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_attendance(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['worker_id', 'farm_id', 'date'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    status = data.get('status', 'present')[m
+[32m+[m[32m    err = validate_enum(status, ['present', 'absent', 'half-day', 'leave', 'holiday'], 'status')[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err, field='status')[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'worker_id': to_int(data['worker_id']),[m
+[32m+[m[32m        'farm_id': to_int(data['farm_id']),[m
+[32m+[m[32m        'date': data['date'],[m
+[32m+[m[32m        'status': status,[m
+[32m+[m[32m        'hours': to_float(data.get('hours')) or None,[m
+[32m+[m[32m        'task_id': to_int(data.get('task_id')) or None,[m
+[32m+[m[32m        'notes': data.get('notes'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# EQUIPMENT[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_equipment(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['farm_id', 'name'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'farm_id': to_int(data['farm_id']),[m
+[32m+[m[32m        'name': str(data['name']).strip(),[m
+[32m+[m[32m        'type': data.get('type'),[m
+[32m+[m[32m        'make': data.get('make'),[m
+[32m+[m[32m        'model': data.get('model'),[m
+[32m+[m[32m        'serial_number': data.get('serial_number'),[m
+[32m+[m[32m        'purchase_date': data.get('purchase_date'),[m
+[32m+[m[32m        'purchase_cost': to_float(data.get('purchase_cost')) or None,[m
+[32m+[m[32m        'current_value': to_float(data.get('current_value')) or None,[m
+[32m+[m[32m        'last_service_date': data.get('last_service_date'),[m
+[32m+[m[32m        'next_service_date': data.get('next_service_date'),[m
+[32m+[m[32m        'status': data.get('status', 'good'),[m
+[32m+[m[32m        'notes': data.get('notes'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# PEST SCOUTING[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_scouting(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['farm_id', 'pest_name', 'scout_date'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    severity = data.get('severity', Severity.LOW)[m
+[32m+[m[32m    err = validate_enum(severity, Severity.ALL, 'severity')[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err, field='severity')[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'farm_id': to_int(data['farm_id']),[m
+[32m+[m[32m        'plot_id': to_int(data.get('plot_id')) or None,[m
+[32m+[m[32m        'enterprise_id': to_int(data.get('enterprise_id')) or None,[m
+[32m+[m[32m        'pest_name': data['pest_name'],[m
+[32m+[m[32m        'pest_type': data.get('pest_type'),[m
+[32m+[m[32m        'severity': severity,[m
+[32m+[m[32m        'affected_area_pct': to_float(data.get('affected_area_pct')) or None,[m
+[32m+[m[32m        'photo_url': data.get('photo_url'),[m
+[32m+[m[32m        'symptoms': data.get('symptoms'),[m
+[32m+[m[32m        'scout_date': data['scout_date'],[m
+[32m+[m[32m        'notes': data.get('notes'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# TREATMENT[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_treatment(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['farm_id', 'product', 'application_date'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'farm_id': to_int(data['farm_id']),[m
+[32m+[m[32m        'plot_id': to_int(data.get('plot_id')) or None,[m
+[32m+[m[32m        'enterprise_id': to_int(data.get('enterprise_id')) or None,[m
+[32m+[m[32m        'product': data['product'],[m
+[32m+[m[32m        'active_ingredient': data.get('active_ingredient'),[m
+[32m+[m[32m        'rate': data.get('rate'),[m
+[32m+[m[32m        'target_pest': data.get('target_pest'),[m
+[32m+[m[32m        'application_date': data['application_date'],[m
+[32m+[m[32m        'notes': data.get('notes'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# MESSAGE[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_message(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['recipient', 'body'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    channel = data.get('channel', Channel.SMS)[m
+[32m+[m[32m    err = validate_enum(channel, Channel.ALL, 'channel')[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err, field='channel')[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'channel': channel,[m
+[32m+[m[32m        'recipient': data['recipient'],[m
+[32m+[m[32m        'body': data['body'],[m
+[32m+[m[32m        'farmer_id': to_int(data.get('farmer_id')) or None,[m
+[32m+[m[32m        'template_code': data.get('template_code'),[m
+[32m+[m[32m        'scheduled_for': data.get('scheduled_for'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# NOTIFICATION[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_notification(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['farmer_id', 'type', 'title', 'message'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    err = validate_enum(data['type'], NotificationType.ALL, 'type')[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err, field='type')[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'farmer_id': to_int(data['farmer_id']),[m
+[32m+[m[32m        'type': data['type'],[m
+[32m+[m[32m        'title': data['title'],[m
+[32m+[m[32m        'message': data['message'],[m
+[32m+[m[32m        'action_url': data.get('action_url'),[m
+[32m+[m[32m        'priority': data.get('priority', 'normal'),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32m# DECISION TOOLS[m
+[32m+[m[32m# ============================================================[m
+[32m+[m[32mdef validate_breakeven(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['fixed_costs', 'variable_cost_per_unit', 'price_per_unit'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    fixed = to_float(data['fixed_costs'])[m
+[32m+[m[32m    vc = to_float(data['variable_cost_per_unit'])[m
+[32m+[m[32m    price = to_float(data['price_per_unit'])[m
+[32m+[m
+[32m+[m[32m    if fixed < 0:[m
+[32m+[m[32m        raise ValidationError("Fixed costs cannot be negative", field='fixed_costs')[m
+[32m+[m[32m    if vc < 0:[m
+[32m+[m[32m        raise ValidationError("Variable cost cannot be negative", field='variable_cost_per_unit')[m
+[32m+[m[32m    if price <= vc:[m
+[32m+[m[32m        raise ValidationError("Price must be greater than variable cost per unit", field='price_per_unit')[m
+[32m+[m
+[32m+[m[32m    return {'fixed_costs': fixed, 'variable_cost_per_unit': vc, 'price_per_unit': price}[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef validate_gross_margin(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['revenue', 'variable_costs'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'revenue': to_float(data['revenue']),[m
+[32m+[m[32m        'variable_costs': to_float(data['variable_costs']),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef validate_loan(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['loan_amount', 'annual_rate', 'term_months', 'monthly_profit'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m
+[32m+[m[32m    term = to_int(data['term_months'])[m
+[32m+[m[32m    if term <= 0:[m
+[32m+[m[32m        raise ValidationError("Term must be positive", field='term_months')[m
+[32m+[m
+[32m+[m[32m    return {[m
+[32m+[m[32m        'loan_amount': to_float(data['loan_amount']),[m
+[32m+[m[32m        'annual_rate': to_float(data['annual_rate']),[m
+[32m+[m[32m        'term_months': term,[m
+[32m+[m[32m        'monthly_profit': to_float(data['monthly_profit']),[m
+[32m+[m[32m    }[m
+[32m+[m
+[32m+[m
+[32m+[m[32mdef validate_risk(data: dict) -> dict:[m
+[32m+[m[32m    err = require_fields(data, ['scores'])[m
+[32m+[m[32m    if err:[m
+[32m+[m[32m        raise ValidationError(err)[m
+[32m+[m[32m    if not isinstance(data['scores'], dict) or not data['scores']:[m
+[32m+[m[32m        raise ValidationError("Scores must be a non-empty object", field='scores')[m
+[32m+[m[32m    try:[m
+[32m+[m[32m        scores = {k: float(v) for k, v in data['scores'].items()}[m
+[32m+[m[32m    except (ValueError, TypeError):[m
+[32m+[m[32m        raise ValidationError("All scores must be numeric", field='scores')[m
+     return {'scores': scores}[m
+\ No newline at end of file[m

@@ -59,3 +59,4 @@ backups/
 *.sqlite
 *.sqlite3
 *.db
+backend/migrations/.tmp/

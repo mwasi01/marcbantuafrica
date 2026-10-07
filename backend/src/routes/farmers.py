@@ -546,7 +546,7 @@ async def dashboard(request, env):
     """, farm_ids)
 
     # Unread notifications
-    notif_count = await db.count('notifications', 'farmer_id = ? AND read = 0', [user['id']])
+    notif_count = await db.count('notifications', 'farmer_id = ? AND read_at IS NULL', [user['id']])
 
     # Recent records
     recent_records = await db.query(f"""
@@ -578,7 +578,7 @@ async def dashboard(request, env):
     notifications = await db.query("""
         SELECT id, type, title, message, priority, created_at
         FROM notifications
-        WHERE farmer_id = ? AND read = 0
+        WHERE farmer_id = ? AND read_at IS NULL
         ORDER BY created_at DESC
         LIMIT 3
     """, [user['id']])

@@ -32,6 +32,7 @@ from routes import (
     partners,
     webhooks,
     feed,
+    messages,
 )
 
 
@@ -199,6 +200,16 @@ ROUTES = [
     ("POST", r"^/api/learning/consultations$", learning.book_consultation),
     ("GET", r"^/api/learning/consultations$", learning.my_consultations),
     ("GET", r"^/api/learning/dashboard$", learning.learning_dashboard),
+    # ---------------- DIRECT MESSAGES ----------------
+    ("GET",    r"^/api/messages/conversations$",                    messages.list_conversations),
+    ("POST",   r"^/api/messages/conversations$",                    messages.start_conversation),
+    ("GET",    r"^/api/messages/conversations/(\d+)$",              messages.get_conversation),
+    ("GET",    r"^/api/messages/conversations/(\d+)/messages$",     messages.list_messages),
+    ("POST",   r"^/api/messages/conversations/(\d+)/messages$",     messages.send_message),
+    ("POST",   r"^/api/messages/conversations/(\d+)/read$",         messages.mark_read),
+    ("GET",    r"^/api/messages/unread-count$",                     messages.unread_total),
+    ("DELETE", r"^/api/messages/(\d+)$",                            messages.delete_message),
+    ("GET",    r"^/api/messages/search-farmers$",                   messages.search_farmers),
     # ---------------- FARMER FEED ----------------
     ("GET",    r"^/api/feed$",                                   feed.list_feed),
     ("POST",   r"^/api/feed/posts$",                             feed.create_post),

@@ -18,7 +18,7 @@
         courses: [],
         myCourses: [],
         videos: [],
-        chatSessionId: null,
+        chatSessionId: localStorage.getItem('marcbantu_chat_session') || null,
     };
 
     async function loadAll() {
@@ -200,28 +200,87 @@
         const box = $('#chat-box');
         if (!input || !sendBtn || !box) return;
 
-        appendChat('assistant', "Hello! I'm your Marcbantu farm advisor. Ask me about pests, weather, prices, records, or farm decisions.");
+        // Load previous session if exists
+        if (state.chatSessionId) {
+            loadChatHistory();
+        } else {
+            appendChat('assistant', "Hello! I'm your Marcbantu farm advisor. Ask me about pests, weather, prices, records, or farm decisions.");
+        }
+
+        // Wire the "New Chat" button
+        const newChatBtn = $('#new-chat-btn');
+        if (newChatBtn) {
+            newChatBtn.addEventListener('click', () => {
+                state.chatSessionId = null;
+                localStorage.removeItem('marcbantu_chat_session');
+                box.innerHTML = '';
+                appendChat('assistant', "New conversation started. What would you like to know?");
+                input.focus();
+            });
+        }
 
         const send = async () => {
             const message = input.value.trim();
             if (!message) return;
-            appendChat('user', message);
+            appendChat('user', renderMarkdown(message));
             input.value = '';
+            input.focus();
 
             const typingId = appendChat('assistant', '<i class="fas fa-spinner fa-spin"></i> Thinking...');
+
             const r = await Api.chat(message, state.chatSessionId);
             document.getElementById(typingId)?.remove();
 
             if (!r.ok) {
-                appendChat('assistant', 'Sorry, I had trouble responding. Try again.');
+                appendChat('assistant', 'Sorry, I had trouble responding. Please try again.');
                 return;
             }
-            state.chatSessionId = r.data.session_id;
-            appendChat('assistant', r.data.reply);
+
+            if (r.data.session_id) {
+                state.chatSessionId = r.data.session_id;
+                localStorage.setItem('marcbantu_chat_session', r.data.session_id);
+            }
+
+            appendChat('assistant', renderMarkdown(r.data.reply || ''));
         };
 
         sendBtn.addEventListener('click', send);
         input.addEventListener('keypress', (e) => { if (e.key === 'Enter') send(); });
+    }
+
+    async function loadChatHistory() {
+        const box = $('#chat-box');
+        if (!box || !state.chatSessionId) return;
+        box.innerHTML = '<div style="text-align:center; padding:12px; color:#8a9c8c; font-size:12px;"><i class="fas fa-spinner fa-spin"></i> Loading history...</div>';
+
+        const r = await Api.chatHistory(state.chatSessionId);
+        if (!r.ok || !r.data?.messages) {
+            box.innerHTML = '';
+            appendChat('assistant', "Hello! I'm your Marcbantu farm advisor. Ask me about pests, weather, prices, records, or farm decisions.");
+            return;
+        }
+
+        box.innerHTML = '';
+        r.data.messages.forEach((m) => {
+            appendChat(m.role === 'user' ? 'user' : 'assistant', renderMarkdown(m.message));
+        });
+    }
+
+    function renderMarkdown(text) {
+        if (!text) return '';
+        let html = String(text)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+
+        html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+        html = html.replace(/`([^`]+)`/g, '<code style="background:#eef1ea; padding:2px 5px; border-radius:4px; font-size:.88em;">$1</code>');
+        html = html.replace(/^\s*(\d+)\.\s+(.+)$/gm, '<div style="padding-left:16px;">$1. $2</div>');
+        html = html.replace(/^\s*[-•]\s+(.+)$/gm, '<div style="padding-left:16px;">• $1</div>');
+        html = html.replace(/\n/g, '<br>');
+
+        return html;
     }
 
     function appendChat(role, text) {

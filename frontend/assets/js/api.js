@@ -426,6 +426,17 @@ const Api = {
     unreadCount: () => api.get('/api/notifications/unread-count'),
     registerDevice: (token, platform = 'web') => api.post('/api/notifications/register-device', { token, platform }),
 
+    // Direct Messages (farmer-to-farmer)
+    dmConversations: () => api.get('/api/messages/conversations'),
+    dmStartConversation: (farmerId) => api.post('/api/messages/conversations', { farmer_id: farmerId }),
+    dmGetConversation: (id) => api.get(`/api/messages/conversations/${id}`),
+    dmMessages: (id, params) => api.get(`/api/messages/conversations/${id}/messages`, params),
+    dmSend: (id, data) => api.post(`/api/messages/conversations/${id}/messages`, data),
+    dmMarkRead: (id) => api.post(`/api/messages/conversations/${id}/read`),
+    dmUnreadCount: () => api.get('/api/messages/unread-count'),
+    dmDelete: (msgId) => api.del(`/api/messages/${msgId}`),
+    dmSearchFarmers: (params) => api.get('/api/messages/search-farmers', params),
+
     // Farmer Feed (social layer)
     feedList: (params) => api.get('/api/feed', params),
     feedCreatePost: (data) => api.post('/api/feed/posts', data),
