@@ -31,6 +31,7 @@
                 <a href="/weather.html"><i class="fas fa-cloud-sun"></i> Weather</a>
                 <a href="/pest.html"><i class="fas fa-bug"></i> Pest & Disease</a>
                 <div class="section-label">Growth</div>
+                <a href="/feed.html"><i class="fas fa-users"></i> Feed</a>
                 <a href="/learning.html" class="active"><i class="fas fa-graduation-cap"></i> Learning</a>
                 <a href="/profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
                 <div class="section-label">Account</div>
@@ -72,8 +73,12 @@
             </div>
 
             <div class="panel">
-                <div class="panel-head">
+                <div class="panel-head" style="display:flex; justify-content:space-between; align-items:center;">
                     <h3><i class="fas fa-robot"></i> Ask Marcbantu AI</h3>
+                    <button id="new-chat-btn"
+                            style="padding:6px 14px; border-radius:20px; background:#e8f0e1; color:#1a3c2e; border:none; cursor:pointer; font-weight:600; font-size:.85rem;">
+                        <i class="fas fa-plus"></i> New Chat
+                    </button>
                 </div>
                 <div id="chat-box"
                     style="background:#fbfcf9;border-radius:14px;padding:1.2rem;border:1px solid #e2e8dd;max-height:340px;overflow-y:auto;margin-bottom:1rem">

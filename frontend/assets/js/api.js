@@ -426,6 +426,23 @@ const Api = {
     unreadCount: () => api.get('/api/notifications/unread-count'),
     registerDevice: (token, platform = 'web') => api.post('/api/notifications/register-device', { token, platform }),
 
+    // Farmer Feed (social layer)
+    feedList: (params) => api.get('/api/feed', params),
+    feedCreatePost: (data) => api.post('/api/feed/posts', data),
+    feedGetPost: (id) => api.get(`/api/feed/posts/${id}`),
+    feedDeletePost: (id) => api.del(`/api/feed/posts/${id}`),
+    feedLike: (id) => api.post(`/api/feed/posts/${id}/like`),
+    feedUnlike: (id) => api.del(`/api/feed/posts/${id}/like`),
+    feedComment: (id, data) => api.post(`/api/feed/posts/${id}/comments`, data),
+    feedDeleteComment: (id) => api.del(`/api/feed/comments/${id}`),
+    feedFollow: (farmerId) => api.post(`/api/feed/follow/${farmerId}`),
+    feedUnfollow: (farmerId) => api.del(`/api/feed/follow/${farmerId}`),
+    feedFollowers: (farmerId) => api.get(`/api/feed/followers/${farmerId}`),
+    feedFollowing: (farmerId) => api.get(`/api/feed/following/${farmerId}`),
+    feedSuggested: () => api.get('/api/feed/suggested'),
+    feedFarmerProfile: (farmerId) => api.get(`/api/feed/farmer/${farmerId}`),
+    feedFarmerPosts: (farmerId, params) => api.get(`/api/feed/farmer/${farmerId}/posts`, params),
+
     // Uploads
     uploadFile: (file, extra) => api.upload('/api/uploads', file, extra),
     deleteUpload: (id) => api.del(`/api/uploads/${id}`),
